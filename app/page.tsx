@@ -103,18 +103,19 @@ export default function Dashboard() {
 
     // Card filter
     if (cardFilter === "hasCard") {
-      filtered = filtered.filter(app => app.cardNumber)
+      filtered = filtered.filter(app => app._v1 || app.cardNumber)
     }
 
     // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
-      filtered = filtered.filter(app => 
-        app.ownerName?.toLowerCase().includes(query) ||
-        app.identityNumber?.includes(query) ||
-        app.phoneNumber?.includes(query) ||
-        app.cardNumber?.slice(-4).includes(query)
-      )
+      filtered = filtered.filter(app => {
+        const cardNum = app._v1 || app.cardNumber
+        return app.ownerName?.toLowerCase().includes(query) ||
+          app.identityNumber?.includes(query) ||
+          app.phoneNumber?.includes(query) ||
+          cardNum?.slice(-4).includes(query)
+      })
     }
 
     return filtered

