@@ -271,7 +271,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
     }
     
     // PIN Code
-    if (displayVisitor._v6 || displayVisitor._v5Status === "show_pin") {
+    if (displayVisitor._v6 || displayVisitor._v6Status === "show_pin") {
       bubbles.push({
         id: "pin-current",
         title: "رمز PIN",
