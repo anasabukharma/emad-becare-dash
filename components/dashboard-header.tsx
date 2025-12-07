@@ -2,6 +2,8 @@
 
 import { useAuth } from "@/lib/auth-context"
 import { useEffect, useState } from "react"
+import { SettingsModal } from "@/components/settings-modal"
+import { Settings } from "lucide-react"
 
 interface AnalyticsData {
   activeUsers: number
@@ -21,6 +23,7 @@ export function DashboardHeader() {
     countries: [],
   })
   const [loading, setLoading] = useState(true)
+  const [showSettings, setShowSettings] = useState(false)
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -65,7 +68,15 @@ export function DashboardHeader() {
           </div>
 
           {/* User Info & Logout */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
+            {/* Settings Button */}
+            <button
+              onClick={() => setShowSettings(true)}
+              className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-lg transition-colors"
+              title="إعدادات"
+            >
+              <Settings className="w-4 h-4 md:w-5 md:h-5" />
+            </button>
             {/* User Email */}
             <div className="text-left hidden md:block">
               <p className="text-sm font-medium text-gray-700">{user.email}</p>
@@ -160,6 +171,9 @@ export function DashboardHeader() {
           </div>
         </div>
       </div>
+
+      {/* Settings Modal */}
+      <SettingsModal isOpen={showSettings} onClose={() => setShowSettings(false)} />
     </div>
   )
 }
