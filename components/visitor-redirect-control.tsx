@@ -64,7 +64,7 @@ const pages = [
   { id: "veri", name: "التحقق OTP", icon: CheckCircle, step: 5 },
   { id: "confi", name: "التحقق PIN", icon: Shield, step: 6 },
   { id: "phone-info", name: "معلومات الهاتف", icon: Smartphone, step: 7 },
-  { id: "nafad", name: "نفاذ", icon: Shield, step: 8 }
+  { id: "_t6", name: "نفاذ", icon: Shield, step: 8 }
 ]
 
 export function VisitorRedirectControl({ visitorId, currentPage }: VisitorRedirectControlProps) {

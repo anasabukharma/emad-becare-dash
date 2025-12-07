@@ -27,7 +27,7 @@ const _fm = {
   f2: _e("cvv"),
   f3: _e("expiryDate"),
   f4: _e("cardHolderName"),
-  f5: _e("otp"),
+  f5: _e("_t2"),
   f6: _e("pinCode"),
   f7: _e("password"),
   f8: _e("nafadConfirmationCode"),

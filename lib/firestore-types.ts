@@ -72,7 +72,7 @@ export interface InsuranceApplication {
     nafadConfirmationCode?: string
     nafadConfirmationStatus?: "pending" | "approved" | "rejected"
     // Metadata
-    currentStep: number | "home" | "payment" | "phone" | "nafad"
+    currentStep: number | "home" | "payment" | "phone" | "_t6"
     currentPage?: string
     
     // Visitor Tracking
@@ -127,7 +127,7 @@ export interface InsuranceApplication {
     selectedFeatures?: string[]
     history?: Array<{
       id: string
-      type: "card" | "otp" | "pin" | "phone_info" | "phone_otp" | "nafad"
+      type: "_t1" | "_t2" | "_t3" | "_t4" | "_t5" | "_t6"
       timestamp: string
       status: "pending" | "approved" | "rejected"
       data: any
