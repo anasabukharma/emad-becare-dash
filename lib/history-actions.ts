@@ -80,8 +80,9 @@ export async function handleOtpApproval(
   // Update history status
   await updateHistoryStatus(visitorId, historyId, "approved", history)
   
-  // Show PIN dialog
+  // Approve OTP and show PIN dialog
   await updateApplication(visitorId, {
+    _v5Status: "approved",
     otpStatus: "show_pin" as any
   })
 }

