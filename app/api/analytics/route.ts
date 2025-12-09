@@ -11,7 +11,7 @@ export async function GET() {
     const allVisitors = allVisitorsSnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
-    }));
+    })) as any[];
     
     // Calculate timestamps
     const now = new Date();
