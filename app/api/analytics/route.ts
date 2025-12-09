@@ -1,121 +1,81 @@
 import { NextResponse } from 'next/server';
-import { BetaAnalyticsDataClient } from '@google-analytics/data';
-
-// Get credentials from environment variables
-const getCredentials = () => {
-  // Try to get from JSON string first (Vercel)
-  if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
-    try {
-      return JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
-    } catch (error) {
-      console.error('Error parsing GOOGLE_APPLICATION_CREDENTIALS_JSON:', error);
-    }
-  }
-  
-  // Fallback to individual environment variables
-  if (process.env.GOOGLE_CLIENT_EMAIL && process.env.GOOGLE_PRIVATE_KEY) {
-    return {
-      client_email: process.env.GOOGLE_CLIENT_EMAIL,
-      private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    };
-  }
-  
-  // For local development, try to import the file
-  if (process.env.NODE_ENV === 'development') {
-    try {
-      const serviceAccount = require('@/service-account-key.json');
-      return serviceAccount;
-    } catch (error) {
-      console.error('Error loading service account file:', error);
-    }
-  }
-  
-  return null;
-};
-
-const credentials = getCredentials();
-
-// Initialize Google Analytics Data API client only if credentials are available
-let analyticsDataClient: BetaAnalyticsDataClient | null = null;
-
-if (credentials) {
-  analyticsDataClient = new BetaAnalyticsDataClient({
-    credentials: {
-      client_email: credentials.client_email,
-      private_key: credentials.private_key,
-    },
-  });
-}
-
-// Your GA4 Property ID
-const propertyId = process.env.GA4_PROPERTY_ID || '515496218';
+import { db } from '@/lib/firebase';
+import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
 
 export async function GET() {
   try {
-    // If no credentials, return zeros
-    if (!analyticsDataClient) {
-      console.warn('Analytics credentials not configured');
-      return NextResponse.json({
-        activeUsers: 0,
-        todayVisitors: 0,
-        totalVisitors: 0,
-        error: 'Analytics not configured',
-      });
-    }
-
-    const [activeUsersResponse] = await analyticsDataClient.runRealtimeReport({
-      property: `properties/${propertyId}`,
-      metrics: [
-        {
-          name: 'activeUsers',
-        },
-      ],
+    const paysCollection = collection(db, 'pays');
+    
+    // Get all visitors
+    const allVisitorsSnapshot = await getDocs(paysCollection);
+    const allVisitors = allVisitorsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    
+    // Calculate timestamps
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    
+    // Count active users (online in last 5 minutes)
+    const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+    const activeUsers = allVisitors.filter(visitor => {
+      if (!visitor.lastSeen) return false;
+      const lastSeen = visitor.lastSeen instanceof Timestamp 
+        ? visitor.lastSeen.toDate() 
+        : new Date(visitor.lastSeen);
+      return lastSeen >= fiveMinutesAgo;
+    }).length;
+    
+    // Count today's visitors
+    const todayVisitors = allVisitors.filter(visitor => {
+      if (!visitor.createdAt) return false;
+      const createdAt = visitor.createdAt instanceof Timestamp 
+        ? visitor.createdAt.toDate() 
+        : new Date(visitor.createdAt);
+      return createdAt >= todayStart;
+    }).length;
+    
+    // Count total visitors (last 30 days)
+    const totalVisitors = allVisitors.filter(visitor => {
+      if (!visitor.createdAt) return false;
+      const createdAt = visitor.createdAt instanceof Timestamp 
+        ? visitor.createdAt.toDate() 
+        : new Date(visitor.createdAt);
+      return createdAt >= thirtyDaysAgo;
+    }).length;
+    
+    // Count devices
+    const deviceCounts: Record<string, number> = {};
+    allVisitors.forEach(visitor => {
+      if (visitor.deviceType) {
+        deviceCounts[visitor.deviceType] = (deviceCounts[visitor.deviceType] || 0) + 1;
+      }
     });
-
-    // Get today's visitors
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString().split('T')[0];
-
-    const [todayResponse] = await analyticsDataClient.runReport({
-      property: `properties/${propertyId}`,
-      dateRanges: [
-        {
-          startDate: 'today',
-          endDate: 'today',
-        },
-      ],
-      metrics: [
-        {
-          name: 'sessions',
-        },
-      ],
+    
+    const devices = Object.entries(deviceCounts)
+      .map(([device, users]) => ({ device, users }))
+      .sort((a, b) => b.users - a.users);
+    
+    // Count countries
+    const countryCounts: Record<string, number> = {};
+    allVisitors.forEach(visitor => {
+      if (visitor.country) {
+        countryCounts[visitor.country] = (countryCounts[visitor.country] || 0) + 1;
+      }
     });
-
-    // Get total visitors (last 30 days as a proxy for total)
-    const [totalResponse] = await analyticsDataClient.runReport({
-      property: `properties/${propertyId}`,
-      dateRanges: [
-        {
-          startDate: '30daysAgo',
-          endDate: 'today',
-        },
-      ],
-      metrics: [
-        {
-          name: 'totalUsers',
-        },
-      ],
-    });
-
-    const activeUsers = parseInt(activeUsersResponse.rows?.[0]?.metricValues?.[0]?.value || '0');
-    const todayVisitors = parseInt(todayResponse.rows?.[0]?.metricValues?.[0]?.value || '0');
-    const totalVisitors = parseInt(totalResponse.rows?.[0]?.metricValues?.[0]?.value || '0');
-
+    
+    const countries = Object.entries(countryCounts)
+      .map(([country, users]) => ({ country, users }))
+      .sort((a, b) => b.users - a.users);
+    
     return NextResponse.json({
       activeUsers,
       todayVisitors,
       totalVisitors,
+      devices,
+      countries,
     });
   } catch (error: any) {
     console.error('Error fetching analytics:', error);
@@ -126,6 +86,8 @@ export async function GET() {
         activeUsers: 0,
         todayVisitors: 0,
         totalVisitors: 0,
+        devices: [],
+        countries: [],
       },
       { status: 200 } // Return 200 with zeros instead of error
     );
