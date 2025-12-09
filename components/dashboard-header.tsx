@@ -95,80 +95,42 @@ export function DashboardHeader() {
       </div>
 
       {/* Analytics Stats Bar */}
-      <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-green-50 px-4 md:px-6 py-3">
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-3 md:gap-4">
+      <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-green-50 px-4 md:px-6 py-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
           {/* Active Users */}
-          <div className="flex flex-col gap-1 bg-white/70 backdrop-blur-sm rounded-lg p-2 md:p-3 border border-green-200">
+          <div className="flex flex-col gap-0.5 bg-white/70 backdrop-blur-sm rounded-lg p-1.5 md:p-2 border border-green-200">
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               <span className="text-xs text-gray-600">نشط الآن</span>
             </div>
-            <span className="text-lg md:text-2xl font-bold text-green-600">
+            <span className="text-base md:text-xl font-bold text-green-600">
               {loading ? '...' : analytics.activeUsers}
             </span>
           </div>
 
           {/* Today's Visitors */}
-          <div className="flex flex-col gap-1 bg-white/70 backdrop-blur-sm rounded-lg p-2 md:p-3 border border-blue-200">
+          <div className="flex flex-col gap-0.5 bg-white/70 backdrop-blur-sm rounded-lg p-1.5 md:p-2 border border-blue-200">
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
               <span className="text-xs text-gray-600">زوار اليوم</span>
             </div>
-            <span className="text-lg md:text-2xl font-bold text-blue-600">
+            <span className="text-base md:text-xl font-bold text-blue-600">
               {loading ? '...' : analytics.todayVisitors}
             </span>
           </div>
 
           {/* Total Visitors */}
-          <div className="flex flex-col gap-1 bg-white/70 backdrop-blur-sm rounded-lg p-2 md:p-3 border border-purple-200">
+          <div className="flex flex-col gap-0.5 bg-white/70 backdrop-blur-sm rounded-lg p-1.5 md:p-2 border border-purple-200">
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
               <span className="text-xs text-gray-600">إجمالي (30 يوم)</span>
             </div>
-            <span className="text-lg md:text-2xl font-bold text-purple-600">
+            <span className="text-base md:text-xl font-bold text-purple-600">
               {loading ? '...' : analytics.totalVisitors}
             </span>
           </div>
 
-          {/* Top Device */}
-          <div className="flex flex-col gap-1 bg-white/70 backdrop-blur-sm rounded-lg p-2 md:p-3 border border-orange-200">
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs">📱</span>
-              <span className="text-xs text-gray-600">الجهاز الأكثر</span>
-            </div>
-            <span className="text-sm md:text-base font-bold text-orange-600">
-              {loading ? '...' : (analytics?.devices && analytics.devices.length > 0) ? `${getDeviceName(analytics.devices[0].device)} (${analytics.devices[0].users})` : 'لا توجد بيانات'}
-            </span>
-          </div>
 
-          {/* Top Country */}
-          <div className="flex flex-col gap-1 bg-white/70 backdrop-blur-sm rounded-lg p-2 md:p-3 border border-teal-200 col-span-2 md:col-span-1">
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs">🌍</span>
-              <span className="text-xs text-gray-600">الدولة الأكثر</span>
-            </div>
-            <span className="text-sm md:text-base font-bold text-teal-600">
-              {loading ? '...' : (analytics?.countries && analytics.countries.length > 0) ? `${analytics.countries[0].country} (${analytics.countries[0].users})` : 'لا توجد بيانات'}
-            </span>
-          </div>
-
-          {/* All Devices */}
-          <div className="flex flex-col gap-1 bg-white/70 backdrop-blur-sm rounded-lg p-2 md:p-3 border border-gray-200 col-span-2 md:col-span-1">
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs">💻</span>
-              <span className="text-xs text-gray-600">جميع الأجهزة</span>
-            </div>
-            <div className="text-xs text-gray-700 space-y-0.5">
-              {loading ? '...' : (analytics?.devices && analytics.devices.length > 0) ? (
-                analytics.devices.map((d, i) => (
-                  <div key={i} className="flex justify-between">
-                    <span>{getDeviceName(d.device)}:</span>
-                    <span className="font-semibold">{d.users}</span>
-                  </div>
-                ))
-              ) : 'لا توجد بيانات'}
-            </div>
-          </div>
         </div>
       </div>
 
