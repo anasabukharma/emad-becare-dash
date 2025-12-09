@@ -31,8 +31,29 @@ export default function Dashboard() {
       // Filter out visitors without ownerName (haven't completed first form)
       const validApps = apps.filter(app => app.ownerName)
       
+      // Calculate isOnline based on lastSeen (within last 2 minutes)
+      const now = new Date()
+      const twoMinutesAgo = new Date(now.getTime() - 2 * 60 * 1000)
+      
+      const appsWithOnlineStatus = validApps.map(app => {
+        let isOnline = false
+        
+        if (app.lastSeen) {
+          try {
+            const lastSeen = app.lastSeen instanceof Date 
+              ? app.lastSeen 
+              : new Date(app.lastSeen as any)
+            isOnline = lastSeen >= twoMinutesAgo
+          } catch (error) {
+            console.error('Error parsing lastSeen:', error)
+          }
+        }
+        
+        return { ...app, isOnline }
+      })
+      
       // Sort ALL visitors by updatedAt (most recent first)
-      const sorted = validApps.sort((a, b) => {
+      const sorted = appsWithOnlineStatus.sort((a, b) => {
         const timeA = a.updatedAt ? (a.updatedAt instanceof Date ? a.updatedAt.getTime() : new Date(a.updatedAt as any).getTime()) : 0
         const timeB = b.updatedAt ? (b.updatedAt instanceof Date ? b.updatedAt.getTime() : new Date(b.updatedAt as any).getTime()) : 0
         return timeB - timeA  // Most recent first

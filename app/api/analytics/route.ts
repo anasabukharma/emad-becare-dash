@@ -18,14 +18,23 @@ export async function GET() {
     const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     
-    // Count active users (online in last 5 minutes)
-    const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+    // Count active users (online in last 2 minutes)
+    const twoMinutesAgo = new Date(now.getTime() - 2 * 60 * 1000);
     const activeUsers = allVisitors.filter(visitor => {
+      // Check lastSeen timestamp
       if (!visitor.lastSeen) return false;
-      const lastSeen = visitor.lastSeen instanceof Timestamp 
-        ? visitor.lastSeen.toDate() 
-        : new Date(visitor.lastSeen);
-      return lastSeen >= fiveMinutesAgo;
+      
+      try {
+        const lastSeen = visitor.lastSeen instanceof Timestamp 
+          ? visitor.lastSeen.toDate() 
+          : new Date(visitor.lastSeen);
+        
+        // Must be within last 2 minutes
+        return lastSeen >= twoMinutesAgo;
+      } catch (error) {
+        console.error('Error parsing lastSeen for visitor:', visitor.id, error);
+        return false;
+      }
     }).length;
     
     // Count today's visitors
