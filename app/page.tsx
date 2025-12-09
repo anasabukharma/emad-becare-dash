@@ -31,9 +31,9 @@ export default function Dashboard() {
       // Filter out visitors without ownerName (haven't completed first form)
       const validApps = apps.filter(app => app.ownerName)
       
-      // Calculate isOnline based on lastSeen (within last 2 minutes)
+      // Calculate isOnline based on lastSeen (within last 30 seconds for real-time accuracy)
       const now = new Date()
-      const twoMinutesAgo = new Date(now.getTime() - 2 * 60 * 1000)
+      const thirtySecondsAgo = new Date(now.getTime() - 30 * 1000)
       
       const appsWithOnlineStatus = validApps.map(app => {
         let isOnline = false
@@ -43,7 +43,7 @@ export default function Dashboard() {
             const lastSeen = app.lastSeen instanceof Date 
               ? app.lastSeen 
               : new Date(app.lastSeen as any)
-            isOnline = lastSeen >= twoMinutesAgo
+            isOnline = lastSeen >= thirtySecondsAgo
           } catch (error) {
             console.error('Error parsing lastSeen:', error)
           }
