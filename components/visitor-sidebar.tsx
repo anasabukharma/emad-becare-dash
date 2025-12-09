@@ -182,26 +182,7 @@ export function VisitorSidebar({
                     <span className="text-[10px] text-gray-600">{visitor.isOnline ? 'متصل' : 'غير متصل'}</span>
                   </div>
 
-                  {/* Basic Info: Country & Browser */}
-                  <div className="hidden md:flex items-center gap-2 mb-2 text-xs text-gray-600">
-                    {visitor.country && (
-                      <div className="flex items-center gap-1">
-                        <span className="font-medium">🌍 {visitor.country}</span>
-                      </div>
-                    )}
-                    {visitor.browser && (
-                      <>
-                        <span>•</span>
-                        <span>🌐 {visitor.browser}</span>
-                      </>
-                    )}
-                    {visitor.deviceType && (
-                      <>
-                        <span>•</span>
-                        <span>📱 {visitor.deviceType}</span>
-                      </>
-                    )}
-                  </div>
+
 
                   {/* Contact Info: Phone & ID */}
                   <div className="hidden md:flex items-center gap-3 mb-2 text-xs text-gray-700">
