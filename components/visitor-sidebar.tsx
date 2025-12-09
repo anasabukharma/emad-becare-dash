@@ -176,11 +176,7 @@ export function VisitorSidebar({
                     )}
                   </div>
 
-                  {/* Online Status - Landscape Only */}
-                  <div className="hidden landscape:flex items-center gap-1 md:hidden">
-                    <div className={`w-1.5 h-1.5 rounded-full ${visitor.isOnline ? 'bg-green-500' : 'bg-gray-400'}`}></div>
-                    <span className="text-[10px] text-gray-600">{visitor.isOnline ? 'متصل' : 'غير متصل'}</span>
-                  </div>
+
 
 
 
