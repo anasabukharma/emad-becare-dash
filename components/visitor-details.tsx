@@ -575,7 +575,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6" dir="rtl">
             {/* Right Column - Credit Card and Card Details */}
             <div className="flex flex-col gap-2">
-              {sortedBubbles.filter(b => b.id === "card-info" || b.id === "card-details").map((bubble) => (
+              {sortedBubbles.filter(b => b.id.startsWith("card-info") || b.id === "card-details").map((bubble) => (
             <DataBubble
               key={bubble.id}
               title={bubble.title}
