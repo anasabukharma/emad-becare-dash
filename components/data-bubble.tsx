@@ -125,8 +125,8 @@ export function DataBubble({
   // Check if this is a card data bubble (has card-specific fields)
   const isCardData = title === "معلومات البطاقة" || data["رقم البطاقة"] || data["نوع البطاقة"]
 
-  // Render credit card style for card data
-  if (isCardData && layout === "vertical") {
+  // Render credit card style for card data (both layouts use same design)
+  if (isCardData) {
     const cardNumber = data["رقم البطاقة"] || data["Card Number"] || "•••• •••• •••• ••••"
     const expiryDate = data["تاريخ الانتهاء"] || data["Expiry"] || "••/••"
     const cvv = data["CVV"] || data["الكود"] || "•••"
