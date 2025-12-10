@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore'
+
 export interface InsuranceApplication {
     id?: string
     country:string,
@@ -73,7 +75,7 @@ export interface InsuranceApplication {
     idVerificationCode?: string
     idVerificationStatus?: "pending" | "approved" | "rejected"
     idVerifiedAt?: Date
-    lastSeen?:string
+    lastSeen?: string | Date | Timestamp
     
     // Nafad fields
     _v8?: string // nafazId (obfuscated)
