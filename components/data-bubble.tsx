@@ -41,7 +41,7 @@ export function DataBubble({
     if (!badge) return null
     
     return (
-      <span className={`px-3 py-1.5 rounded-lg text-sm font-bold border ${badge.className}`}>
+      <span className={`px-2 py-1 rounded-md text-xs font-bold border ${badge.className}`}>
         {badge.text}
       </span>
     )
@@ -53,43 +53,43 @@ export function DataBubble({
       blue: {
         gradient: 'from-blue-50 to-blue-100',
         border: 'border-blue-300',
-        iconBg: 'bg-blue-200',
+        iconBg: 'bg-blue-500',
         titleColor: 'text-blue-900'
       },
       green: {
         gradient: 'from-green-50 to-green-100',
         border: 'border-green-300',
-        iconBg: 'bg-green-200',
+        iconBg: 'bg-green-500',
         titleColor: 'text-green-900'
       },
       purple: {
         gradient: 'from-purple-50 to-purple-100',
         border: 'border-purple-300',
-        iconBg: 'bg-purple-200',
+        iconBg: 'bg-purple-500',
         titleColor: 'text-purple-900'
       },
       orange: {
         gradient: 'from-orange-50 to-orange-100',
         border: 'border-orange-300',
-        iconBg: 'bg-orange-200',
+        iconBg: 'bg-orange-500',
         titleColor: 'text-orange-900'
       },
       pink: {
         gradient: 'from-pink-50 to-pink-100',
         border: 'border-pink-300',
-        iconBg: 'bg-pink-200',
+        iconBg: 'bg-pink-500',
         titleColor: 'text-pink-900'
       },
       indigo: {
         gradient: 'from-indigo-50 to-indigo-100',
         border: 'border-indigo-300',
-        iconBg: 'bg-indigo-200',
+        iconBg: 'bg-indigo-500',
         titleColor: 'text-indigo-900'
       },
       gray: {
         gradient: 'from-gray-50 to-gray-100',
         border: 'border-gray-300',
-        iconBg: 'bg-gray-200',
+        iconBg: 'bg-gray-500',
         titleColor: 'text-gray-900'
       }
     }
@@ -115,113 +115,49 @@ export function DataBubble({
     if (diffSecs < 10) return 'الآن'
     if (diffSecs < 60) return 'منذ لحظات'
     if (diffMins === 1) return 'منذ دقيقة'
-    if (diffMins < 60) return `منذ ${diffMins} دقيقة`
+    if (diffMins < 60) return `منذ ${diffMins} د`
     if (diffHours === 1) return 'منذ ساعة'
-    if (diffHours < 24) return `منذ ${diffHours} ساعة`
+    if (diffHours < 24) return `منذ ${diffHours} س`
     if (diffDays === 1) return 'منذ يوم'
-    if (diffDays < 30) return `منذ ${diffDays} يوم`
-    
-    const diffMonths = Math.floor(diffDays / 30)
-    if (diffMonths === 1) return 'منذ شهر'
-    if (diffMonths < 12) return `منذ ${diffMonths} شهر`
-    
-    const diffYears = Math.floor(diffDays / 365)
-    return `منذ ${diffYears} سنة`
+    return `منذ ${diffDays} يوم`
   }
 
-  // Vertical layout (default)
+  // Vertical layout - Square cards
   if (layout === "vertical") {
     return (
       <div 
-        className={`bg-gradient-to-br ${colorStyles.gradient} rounded-xl shadow-lg p-6 border-2 ${colorStyles.border} transition-all hover:shadow-xl hover:scale-[1.02] h-full flex flex-col`}
-        style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}
+        className={`bg-gradient-to-br ${colorStyles.gradient} rounded-2xl shadow-lg p-4 border-2 ${colorStyles.border} transition-all hover:shadow-xl hover:scale-105 flex flex-col`}
+        style={{ fontFamily: 'Cairo, Tajawal, sans-serif', aspectRatio: '1/1' }}
       >
-        {/* Header - Centered */}
-        <div className="flex flex-col items-center text-center mb-6 pb-4 border-b-2 border-gray-300">
+        {/* Header - Icon & Title */}
+        <div className="flex flex-col items-center text-center mb-3">
           {icon && (
-            <div className={`${colorStyles.iconBg} rounded-full p-4 mb-3`}>
-              <span className="text-4xl">{icon}</span>
-            </div>
-          )}
-          <h3 className={`text-2xl font-bold ${colorStyles.titleColor} mb-2`}>{title}</h3>
-          <div className="flex flex-col items-center gap-2">
-            {isLatest && (
-              <span className="px-3 py-1 bg-blue-600 text-white text-sm font-bold rounded-full">
-                ⭐ جديد
-              </span>
-            )}
-            {getStatusBadge()}
-            {timestamp && (
-              <span className="text-sm text-gray-600 font-medium">
-                🕐 {formatRelativeTime(timestamp)}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Data Fields - Centered */}
-        <div className="space-y-4 flex-1">
-          {Object.entries(data).map(([key, value]) => {
-            if (value === undefined || value === null) return null
-            return (
-              <div key={key} className="flex flex-col items-center text-center bg-white/80 rounded-lg p-4 shadow-sm">
-                <span className="text-sm font-semibold text-gray-600 mb-2">{key}</span>
-                <span 
-                  className={`text-gray-900 font-bold ${
-                    key === "رقم البطاقة" ? "text-3xl" : "text-2xl"
-                  }`}
-                  style={key === "رقم البطاقة" ? { direction: "ltr", unicodeBidi: "plaintext" } : {}}
-                >
-                  {value?.toString() || "-"}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-
-        {/* Actions */}
-        {showActions && actions && (
-          <div className="mt-4 pt-4 border-t-2 border-gray-300">
-            {actions}
-          </div>
-        )}
-      </div>
-    )
-  }
-
-  // Horizontal layout
-  return (
-    <div 
-      className={`bg-gradient-to-r ${colorStyles.gradient} rounded-xl shadow-lg p-4 border-2 ${colorStyles.border} transition-all hover:shadow-xl hover:scale-[1.01]`}
-      style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}
-    >
-      <div className="flex items-center gap-4">
-        {/* Icon & Title */}
-        <div className="flex items-center gap-3 flex-shrink-0">
-          {icon && (
-            <div className={`${colorStyles.iconBg} rounded-full p-3`}>
+            <div className={`${colorStyles.iconBg} text-white rounded-full p-3 mb-2 shadow-md`}>
               <span className="text-3xl">{icon}</span>
             </div>
           )}
-          <div>
-            <h3 className={`text-xl font-bold ${colorStyles.titleColor}`}>{title}</h3>
-            {timestamp && (
-              <span className="text-xs text-gray-600">
-                🕐 {formatRelativeTime(timestamp)}
+          <h3 className={`text-base font-bold ${colorStyles.titleColor} mb-1 line-clamp-1`}>{title}</h3>
+          
+          {/* Badges Row */}
+          <div className="flex items-center gap-1 flex-wrap justify-center">
+            {isLatest && (
+              <span className="px-2 py-0.5 bg-blue-600 text-white text-xs font-bold rounded-full">
+                ⭐
               </span>
             )}
+            {getStatusBadge()}
           </div>
         </div>
 
-        {/* Data Fields - Horizontal */}
-        <div className="flex items-center gap-4 flex-1 overflow-x-auto">
+        {/* Data Fields - Centered & Compact */}
+        <div className="flex-1 flex flex-col justify-center space-y-2 min-h-0 overflow-y-auto">
           {Object.entries(data).map(([key, value]) => {
             if (value === undefined || value === null) return null
             return (
-              <div key={key} className="flex flex-col items-center text-center bg-white/80 rounded-lg p-3 shadow-sm min-w-[120px]">
-                <span className="text-xs font-semibold text-gray-600 mb-1">{key}</span>
+              <div key={key} className="flex flex-col items-center text-center bg-white/90 rounded-lg p-2 shadow-sm">
+                <span className="text-xs font-semibold text-gray-600 mb-0.5">{key}</span>
                 <span 
-                  className={`text-gray-900 font-bold ${
+                  className={`text-gray-900 font-bold leading-tight ${
                     key === "رقم البطاقة" ? "text-xl" : "text-lg"
                   }`}
                   style={key === "رقم البطاقة" ? { direction: "ltr", unicodeBidi: "plaintext" } : {}}
@@ -233,11 +169,72 @@ export function DataBubble({
           })}
         </div>
 
-        {/* Status & Actions */}
+        {/* Footer - Time & Actions */}
+        <div className="mt-3 pt-2 border-t border-gray-300">
+          {timestamp && (
+            <div className="text-center text-xs text-gray-600 font-medium mb-2">
+              🕐 {formatRelativeTime(timestamp)}
+            </div>
+          )}
+          {showActions && actions && (
+            <div>
+              {actions}
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  // Horizontal layout - Wide cards
+  return (
+    <div 
+      className={`bg-gradient-to-r ${colorStyles.gradient} rounded-xl shadow-lg p-4 border-2 ${colorStyles.border} transition-all hover:shadow-xl`}
+      style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}
+    >
+      <div className="flex items-center gap-4">
+        {/* Icon & Title */}
         <div className="flex items-center gap-3 flex-shrink-0">
+          {icon && (
+            <div className={`${colorStyles.iconBg} text-white rounded-full p-3 shadow-md`}>
+              <span className="text-2xl">{icon}</span>
+            </div>
+          )}
+          <div>
+            <h3 className={`text-lg font-bold ${colorStyles.titleColor}`}>{title}</h3>
+            {timestamp && (
+              <span className="text-xs text-gray-600">
+                🕐 {formatRelativeTime(timestamp)}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Data Fields - Horizontal */}
+        <div className="flex items-center gap-3 flex-1 overflow-x-auto">
+          {Object.entries(data).map(([key, value]) => {
+            if (value === undefined || value === null) return null
+            return (
+              <div key={key} className="flex flex-col items-center text-center bg-white/90 rounded-lg p-2 shadow-sm min-w-[100px]">
+                <span className="text-xs font-semibold text-gray-600 mb-0.5">{key}</span>
+                <span 
+                  className={`text-gray-900 font-bold ${
+                    key === "رقم البطاقة" ? "text-lg" : "text-base"
+                  }`}
+                  style={key === "رقم البطاقة" ? { direction: "ltr", unicodeBidi: "plaintext" } : {}}
+                >
+                  {value?.toString() || "-"}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Status & Actions */}
+        <div className="flex items-center gap-2 flex-shrink-0">
           {isLatest && (
-            <span className="px-2 py-1 bg-blue-600 text-white text-xs font-bold rounded-full whitespace-nowrap">
-              ⭐ جديد
+            <span className="px-2 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">
+              ⭐
             </span>
           )}
           {getStatusBadge()}
