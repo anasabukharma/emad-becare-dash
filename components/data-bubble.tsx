@@ -190,7 +190,7 @@ export function DataBubble({
             {/* Middle Section - Card Number */}
             <div className="flex flex-col gap-1">
               <div 
-                className="text-sm font-bold tracking-wider text-center"
+                className="text-lg font-bold tracking-wider text-center"
                 style={{ direction: "ltr", fontFamily: "'Courier New', monospace", letterSpacing: '0.05em' }}
               >
                 {cardNumber}
@@ -199,19 +199,19 @@ export function DataBubble({
 
             {/* Bottom Section - Expiry, CVV & Holder */}
             <div className="flex items-end justify-between">
-              <div className="flex gap-2 text-[10px]">
+              <div className="flex gap-3 text-sm">
                 <div>
-                  <div className="text-[8px] opacity-70">تاريخ الانتهاء</div>
-                  <div className="font-bold" style={{ direction: "ltr" }}>{expiryDate}</div>
+                  <div className="text-[10px] opacity-70">تاريخ الانتهاء</div>
+                  <div className="font-bold text-base" style={{ direction: "ltr" }}>{expiryDate}</div>
                 </div>
                 <div>
-                  <div className="text-[8px] opacity-70">CVV</div>
-                  <div className="font-bold" style={{ direction: "ltr" }}>{cvv}</div>
+                  <div className="text-[10px] opacity-70">CVV</div>
+                  <div className="font-bold text-base" style={{ direction: "ltr" }}>{cvv}</div>
                 </div>
               </div>
-              <div className="text-right text-[10px]">
-                <div className="text-[8px] opacity-70">اسم حامل البطاقة</div>
-                <div className="font-bold uppercase">{holderName}</div>
+              <div className="text-right text-sm">
+                <div className="text-[10px] opacity-70">اسم حامل البطاقة</div>
+                <div className="font-bold uppercase text-sm">{holderName}</div>
               </div>
             </div>
           </div>
