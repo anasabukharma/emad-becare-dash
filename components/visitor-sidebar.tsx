@@ -55,13 +55,14 @@ const getPageName = (step: number | string): string => {
   const stepNum = typeof step === 'number' ? step : parseInt(step)
   const pageNames: Record<number, string> = {
     0: 'الرئيسية',
-    1: 'بيانات أساسية',
-    2: 'تفاصيل التأمين',
-    3: 'اختيار العرض',
+    1: 'الرئيسية',
+    2: 'بيانات التأمين',
+    3: 'مقارنة العروض',
     4: 'الدفع',
-    5: 'الهاتف',
-    6: 'نفاذ',
-    7: 'PIN'
+    5: 'OTP',
+    6: 'PIN',
+    7: 'الهاتف',
+    8: 'نفاذ'
   }
   
   return pageNames[stepNum] || `غير محدد (${stepNum})`
