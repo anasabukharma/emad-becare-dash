@@ -213,7 +213,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
   // 3. Selected Offer
   if (visitor.selectedOffer) {
     bubbles.push({
-      id: "selected-offer",
+        id: "offer-details",
       title: "العرض المختار",
       icon: "📊",
       color: "purple",
@@ -276,7 +276,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
     // Show card info if we have at least card number (encrypted or decrypted)
     if (cardNumber || encryptedCardNumber) {
       bubbles.push({
-        id: "card-current",
+        id: "card-info",
         title: "معلومات البطاقة",
         icon: "💳",
         color: "orange",
