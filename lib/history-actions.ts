@@ -11,7 +11,7 @@ import type { HistoryEntry } from "./history-helpers"
 export async function updateHistoryStatus(
   visitorId: string,
   historyId: string,
-  newStatus: "approved" | "rejected",
+  newStatus: "approved" | "rejected" | "approved_with_otp" | "approved_with_pin" | "resend",
   history: HistoryEntry[]
 ): Promise<void> {
   const updatedHistory = history.map((entry) => {
