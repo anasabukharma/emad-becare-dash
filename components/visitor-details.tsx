@@ -671,8 +671,6 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
                 b.id !== "card-info" && 
                 b.id !== "card-details" &&
                 b.id !== "basic-info" && 
-                b.id !== "insurance-info" && 
-                b.id !== "offers-info" &&
                 b.id !== "offer-details" &&
                 b.id !== "insurance-details"
               ).map((bubble) => (
@@ -749,12 +747,10 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
               ))}
             </div>
 
-            {/* Left Column - Static Info (Basic, Insurance, Offers, Details) */}
+            {/* Left Column - Static Info (Basic, Offer Details, Insurance Details) */}
             <div className="flex flex-col gap-2">
               {sortedBubbles.filter(b => 
                 b.id === "basic-info" || 
-                b.id === "insurance-info" || 
-                b.id === "offers-info" ||
                 b.id === "offer-details" ||
                 b.id === "insurance-details"
               ).map((bubble) => (
