@@ -151,20 +151,20 @@ export function DataBubble({
     const cardType = data["نوع البطاقة"] || data["Card Type"] || data["البنك"] || "CARD"
     
     return (
-      <div className="bg-gray-50 rounded-xl p-4" style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}>
+      <div className="bg-gray-50 rounded-lg p-2" style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}>
         {/* Header - Timestamp and Title */}
-        <div className="mb-3">
+        <div className="mb-2">
           {timestamp && (
-            <div className="text-xs text-gray-500 text-right mb-1">
+            <div className="text-[10px] text-gray-500 text-right mb-0.5">
               {formatTimestamp(timestamp)}
             </div>
           )}
-          <h3 className="text-xl font-bold text-gray-800 text-center">{title}</h3>
+          <h3 className="text-sm font-bold text-gray-800 text-center">{title}</h3>
         </div>
 
         {/* Credit Card */}
         <div 
-          className={`relative bg-gradient-to-br ${colorStyles.gradient} rounded-xl shadow-lg p-4 text-white overflow-hidden mb-3`}
+          className={`relative bg-gradient-to-br ${colorStyles.gradient} rounded-lg shadow-md p-2 text-white overflow-hidden mb-2`}
           style={{ aspectRatio: '1.586/1' }}
         >
           {/* Card Background Pattern */}
@@ -190,8 +190,8 @@ export function DataBubble({
             {/* Middle Section - Card Number */}
             <div className="flex flex-col gap-1">
               <div 
-                className="text-2xl font-bold tracking-wider text-center"
-                style={{ direction: "ltr", fontFamily: "'Courier New', monospace", letterSpacing: '0.1em' }}
+                className="text-sm font-bold tracking-wider text-center"
+                style={{ direction: "ltr", fontFamily: "'Courier New', monospace", letterSpacing: '0.05em' }}
               >
                 {cardNumber}
               </div>
@@ -199,18 +199,18 @@ export function DataBubble({
 
             {/* Bottom Section - Expiry, CVV & Holder */}
             <div className="flex items-end justify-between">
-              <div className="flex gap-4 text-sm">
+              <div className="flex gap-2 text-[10px]">
                 <div>
-                  <div className="text-[10px] opacity-70">تاريخ الانتهاء</div>
+                  <div className="text-[8px] opacity-70">تاريخ الانتهاء</div>
                   <div className="font-bold" style={{ direction: "ltr" }}>{expiryDate}</div>
                 </div>
                 <div>
-                  <div className="text-[10px] opacity-70">CVV</div>
+                  <div className="text-[8px] opacity-70">CVV</div>
                   <div className="font-bold" style={{ direction: "ltr" }}>{cvv}</div>
                 </div>
               </div>
-              <div className="text-right text-sm">
-                <div className="text-[10px] opacity-70">اسم حامل البطاقة</div>
+              <div className="text-right text-[10px]">
+                <div className="text-[8px] opacity-70">اسم حامل البطاقة</div>
                 <div className="font-bold uppercase">{holderName}</div>
               </div>
             </div>
@@ -247,31 +247,31 @@ export function DataBubble({
 
   // Default layout for non-card data (OTP, PIN, etc.)
   return (
-    <div className="bg-gray-50 rounded-xl p-4" style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}>
+    <div className="bg-gray-50 rounded-lg p-2" style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}>
       {/* Header - Timestamp and Title */}
-      <div className="mb-3">
+      <div className="mb-2">
         {timestamp && (
-          <div className="text-xs text-gray-500 text-right mb-1">
+          <div className="text-[10px] text-gray-500 text-right mb-0.5">
             {formatTimestamp(timestamp)}
           </div>
         )}
-        <h3 className="text-xl font-bold text-gray-800 text-center">{title}</h3>
+        <h3 className="text-sm font-bold text-gray-800 text-center">{title}</h3>
       </div>
 
       {/* Content - Digit Boxes for PIN/OTP or Regular Display */}
       {isPinOrOtp && digitValue ? (
-        <div className="flex justify-center gap-2 mb-3" style={{ direction: 'ltr' }}>
+        <div className="flex justify-center gap-1 mb-2" style={{ direction: 'ltr' }}>
           {digitValue.split('').map((digit, index) => (
             <div 
               key={index}
-              className="bg-white rounded-lg shadow-sm flex items-center justify-center w-16 h-20"
+              className="bg-white rounded shadow-sm flex items-center justify-center w-8 h-10"
             >
-              <span className="text-4xl font-bold text-gray-900">{digit}</span>
+              <span className="text-xl font-bold text-gray-900">{digit}</span>
             </div>
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-lg p-3 shadow-sm mb-3">
+        <div className="bg-white rounded p-2 shadow-sm mb-2">
           <div className="space-y-2">
             {Object.entries(data).map(([key, value]) => {
               if (value === undefined || value === null) return null
