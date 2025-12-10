@@ -151,7 +151,7 @@ export function DataBubble({
     const cardType = data["نوع البطاقة"] || data["Card Type"] || data["البنك"] || "CARD"
     
     return (
-      <div className="bg-gray-50 rounded-lg p-2" style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}>
+      <div className="bg-gray-50 rounded-lg p-2 border border-gray-300" style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}>
         {/* Header - Timestamp and Title */}
         <div className="mb-2">
           {timestamp && (
@@ -246,8 +246,8 @@ export function DataBubble({
   }
 
   // Default layout for non-card data (OTP, PIN, etc.)
-  return (
-    <div className="bg-gray-50 rounded-lg p-2" style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}>
+    return (
+      <div className="bg-gray-50 rounded-lg p-2 border border-gray-300" style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}>
       {/* Header - Timestamp and Title */}
       <div className="mb-2">
         {timestamp && (
