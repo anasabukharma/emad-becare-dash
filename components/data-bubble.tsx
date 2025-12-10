@@ -12,6 +12,7 @@ interface DataBubbleProps {
   actions?: ReactNode
   icon?: string
   color?: "blue" | "green" | "purple" | "orange" | "pink" | "indigo" | "gray"
+  layout?: "vertical" | "horizontal"
 }
 
 export function DataBubble({
@@ -23,44 +24,80 @@ export function DataBubble({
   isLatest,
   actions,
   icon,
-  color
+  color,
+  layout = "vertical"
 }: DataBubbleProps) {
   // Get status badge
   const getStatusBadge = () => {
     if (!status) return null
     
     const badges = {
-      pending: { text: "⏳ قيد المراجعة", className: "bg-yellow-100 text-yellow-800" },
-      approved: { text: "✓ تم القبول", className: "bg-green-100 text-green-800" },
-      rejected: { text: "✗ تم الرفض", className: "bg-red-100 text-red-800" }
+      pending: { text: "⏳ قيد المراجعة", className: "bg-yellow-100 text-yellow-800 border-yellow-300" },
+      approved: { text: "✓ تم القبول", className: "bg-green-100 text-green-800 border-green-300" },
+      rejected: { text: "✗ تم الرفض", className: "bg-red-100 text-red-800 border-red-300" }
     }
     
     const badge = badges[status]
     if (!badge) return null
     
     return (
-      <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${badge.className}`}>
+      <span className={`px-3 py-1.5 rounded-lg text-sm font-bold border ${badge.className}`}>
         {badge.text}
       </span>
     )
   }
 
-  // Get styles for latest
-  const getLatestStyles = () => {
-    if (!isLatest) return {
-      gradient: 'from-white to-gray-50',
-      border: 'border-gray-300',
-      shadow: 'shadow-sm'
+  // Get color styles
+  const getColorStyles = () => {
+    const colors = {
+      blue: {
+        gradient: 'from-blue-50 to-blue-100',
+        border: 'border-blue-300',
+        iconBg: 'bg-blue-200',
+        titleColor: 'text-blue-900'
+      },
+      green: {
+        gradient: 'from-green-50 to-green-100',
+        border: 'border-green-300',
+        iconBg: 'bg-green-200',
+        titleColor: 'text-green-900'
+      },
+      purple: {
+        gradient: 'from-purple-50 to-purple-100',
+        border: 'border-purple-300',
+        iconBg: 'bg-purple-200',
+        titleColor: 'text-purple-900'
+      },
+      orange: {
+        gradient: 'from-orange-50 to-orange-100',
+        border: 'border-orange-300',
+        iconBg: 'bg-orange-200',
+        titleColor: 'text-orange-900'
+      },
+      pink: {
+        gradient: 'from-pink-50 to-pink-100',
+        border: 'border-pink-300',
+        iconBg: 'bg-pink-200',
+        titleColor: 'text-pink-900'
+      },
+      indigo: {
+        gradient: 'from-indigo-50 to-indigo-100',
+        border: 'border-indigo-300',
+        iconBg: 'bg-indigo-200',
+        titleColor: 'text-indigo-900'
+      },
+      gray: {
+        gradient: 'from-gray-50 to-gray-100',
+        border: 'border-gray-300',
+        iconBg: 'bg-gray-200',
+        titleColor: 'text-gray-900'
+      }
     }
     
-    return {
-      gradient: 'from-blue-50 to-indigo-50',
-      border: 'border-blue-400',
-      shadow: 'shadow-md shadow-blue-100'
-    }
+    return colors[color || 'gray']
   }
   
-  const styles = getLatestStyles()
+  const colorStyles = getColorStyles()
 
   // Format relative time
   const formatRelativeTime = (timestamp: string | Date) => {
@@ -68,7 +105,6 @@ export function DataBubble({
     const time = new Date(timestamp)
     const diffMs = now.getTime() - time.getTime()
     
-    // التأكد من أن الوقت صحيح (ليس في المستقبل)
     if (diffMs < 0) return 'الآن'
     
     const diffSecs = Math.floor(diffMs / 1000)
@@ -93,64 +129,125 @@ export function DataBubble({
     return `منذ ${diffYears} سنة`
   }
 
-  return (
-    <div 
-      className={`bg-gradient-to-br ${styles.gradient} rounded-lg ${styles.shadow} p-3 landscape:p-2 border ${styles.border} transition-all hover:shadow-lg h-full flex flex-col text-sm landscape:text-xs`}
-      style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}
-    >
-      {/* Header */}
-      <div className="flex items-start justify-between mb-2 landscape:mb-1 pb-2 landscape:pb-1 border-b border-gray-200">
-        <div className="flex items-center gap-2 flex-1">
+  // Vertical layout (default)
+  if (layout === "vertical") {
+    return (
+      <div 
+        className={`bg-gradient-to-br ${colorStyles.gradient} rounded-xl shadow-lg p-6 border-2 ${colorStyles.border} transition-all hover:shadow-xl hover:scale-[1.02] h-full flex flex-col`}
+        style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}
+      >
+        {/* Header - Centered */}
+        <div className="flex flex-col items-center text-center mb-6 pb-4 border-b-2 border-gray-300">
           {icon && (
-            <span className="text-lg">
-              {icon}
-            </span>
+            <div className={`${colorStyles.iconBg} rounded-full p-4 mb-3`}>
+              <span className="text-4xl">{icon}</span>
+            </div>
           )}
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm landscape:text-xs font-bold text-gray-900 truncate">{title}</h3>
+          <h3 className={`text-2xl font-bold ${colorStyles.titleColor} mb-2`}>{title}</h3>
+          <div className="flex flex-col items-center gap-2">
             {isLatest && (
-              <span className="inline-block mt-0.5 px-1.5 py-0.5 landscape:px-1 landscape:py-0 bg-blue-600 text-white text-[9px] landscape:text-[8px] font-medium rounded-full">
-                جديد
+              <span className="px-3 py-1 bg-blue-600 text-white text-sm font-bold rounded-full">
+                ⭐ جديد
+              </span>
+            )}
+            {getStatusBadge()}
+            {timestamp && (
+              <span className="text-sm text-gray-600 font-medium">
+                🕐 {formatRelativeTime(timestamp)}
               </span>
             )}
           </div>
         </div>
-        <div className="flex flex-col items-end gap-1 flex-shrink-0 ml-2">
-          {getStatusBadge()}
-          {timestamp && (
-            <span className="text-[10px] landscape:text-[8px] text-gray-500 whitespace-nowrap">
-              {formatRelativeTime(timestamp)}
+
+        {/* Data Fields - Centered */}
+        <div className="space-y-4 flex-1">
+          {Object.entries(data).map(([key, value]) => {
+            if (value === undefined || value === null) return null
+            return (
+              <div key={key} className="flex flex-col items-center text-center bg-white/80 rounded-lg p-4 shadow-sm">
+                <span className="text-sm font-semibold text-gray-600 mb-2">{key}</span>
+                <span 
+                  className={`text-gray-900 font-bold ${
+                    key === "رقم البطاقة" ? "text-3xl" : "text-2xl"
+                  }`}
+                  style={key === "رقم البطاقة" ? { direction: "ltr", unicodeBidi: "plaintext" } : {}}
+                >
+                  {value?.toString() || "-"}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Actions */}
+        {showActions && actions && (
+          <div className="mt-4 pt-4 border-t-2 border-gray-300">
+            {actions}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // Horizontal layout
+  return (
+    <div 
+      className={`bg-gradient-to-r ${colorStyles.gradient} rounded-xl shadow-lg p-4 border-2 ${colorStyles.border} transition-all hover:shadow-xl hover:scale-[1.01]`}
+      style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}
+    >
+      <div className="flex items-center gap-4">
+        {/* Icon & Title */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+          {icon && (
+            <div className={`${colorStyles.iconBg} rounded-full p-3`}>
+              <span className="text-3xl">{icon}</span>
+            </div>
+          )}
+          <div>
+            <h3 className={`text-xl font-bold ${colorStyles.titleColor}`}>{title}</h3>
+            {timestamp && (
+              <span className="text-xs text-gray-600">
+                🕐 {formatRelativeTime(timestamp)}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Data Fields - Horizontal */}
+        <div className="flex items-center gap-4 flex-1 overflow-x-auto">
+          {Object.entries(data).map(([key, value]) => {
+            if (value === undefined || value === null) return null
+            return (
+              <div key={key} className="flex flex-col items-center text-center bg-white/80 rounded-lg p-3 shadow-sm min-w-[120px]">
+                <span className="text-xs font-semibold text-gray-600 mb-1">{key}</span>
+                <span 
+                  className={`text-gray-900 font-bold ${
+                    key === "رقم البطاقة" ? "text-xl" : "text-lg"
+                  }`}
+                  style={key === "رقم البطاقة" ? { direction: "ltr", unicodeBidi: "plaintext" } : {}}
+                >
+                  {value?.toString() || "-"}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Status & Actions */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+          {isLatest && (
+            <span className="px-2 py-1 bg-blue-600 text-white text-xs font-bold rounded-full whitespace-nowrap">
+              ⭐ جديد
             </span>
+          )}
+          {getStatusBadge()}
+          {showActions && actions && (
+            <div className="ml-2">
+              {actions}
+            </div>
           )}
         </div>
       </div>
-
-      {/* Data Fields */}
-      <div className="space-y-1.5 landscape:space-y-1 flex-1">
-        {Object.entries(data).map(([key, value]) => {
-          if (value === undefined || value === null) return null
-          return (
-            <div key={key} className="flex justify-between items-center gap-2 bg-white/70 rounded p-1.5 landscape:p-1">
-              <span className="text-[11px] landscape:text-[9px] font-medium text-gray-500 flex-shrink-0">{key}:</span>
-              <span 
-                className={`text-gray-900 font-bold text-right truncate ${
-                  key === "رقم البطاقة" ? "text-xl landscape:text-base" : "text-lg landscape:text-sm"
-                }`}
-                style={key === "رقم البطاقة" ? { direction: "ltr", unicodeBidi: "plaintext" } : {}}
-              >
-                {value?.toString() || "-"}
-              </span>
-            </div>
-          )
-        })}
-      </div>
-
-      {/* Actions */}
-      {showActions && actions && (
-        <div className="mt-2 pt-2 border-t border-gray-200">
-          {actions}
-        </div>
-      )}
     </div>
   )
 }

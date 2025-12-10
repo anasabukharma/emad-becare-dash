@@ -25,6 +25,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
   const [isNavigating, setIsNavigating] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [nafadCode, setNafadCode] = useState("")
+  const [cardsLayout, setCardsLayout] = useState<"vertical" | "horizontal">("vertical")
 
   if (!visitor) {
     return (
@@ -543,8 +544,28 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
             </div>
           </div>
           
-          {/* Navigation Dropdown */}
-          <div className="relative">
+          {/* Layout Toggle & Navigation */}
+          <div className="flex items-center gap-3">
+            {/* Layout Toggle */}
+            <button
+              onClick={() => setCardsLayout(cardsLayout === "vertical" ? "horizontal" : "vertical")}
+              className="px-4 py-2 border border-gray-300 rounded-lg bg-white text-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2"
+              title={cardsLayout === "vertical" ? "عرض أفقي" : "عرض عمودي"}
+            >
+              {cardsLayout === "vertical" ? (
+                <>
+                  <span>📊</span>
+                  <span className="hidden md:inline">عمودي</span>
+                </>
+              ) : (
+                <>
+                  <span>📈</span>
+                  <span className="hidden md:inline">أفقي</span>
+                </>
+              )}
+            </button>
+            
+            {/* Navigation Dropdown */}
             <select
               onChange={(e) => handleNavigate(e.target.value)}
               disabled={isNavigating}
@@ -572,7 +593,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
             <p>لا توجد بيانات لعرضها</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 landscape:grid-cols-3 md:grid-cols-3 gap-3 landscape:gap-3 md:gap-4" dir="rtl">
+          <div className={cardsLayout === "vertical" ? "grid grid-cols-1 landscape:grid-cols-3 md:grid-cols-3 gap-3 landscape:gap-3 md:gap-4" : "flex flex-col gap-3"} dir="rtl">
           {sortedBubbles.map((bubble) => (
             <DataBubble
               key={bubble.id}
@@ -582,6 +603,7 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
               status={bubble.status}
               showActions={bubble.showActions}
               isLatest={bubble.isLatest}
+              layout={cardsLayout}
               actions={
                 bubble.customActions ? bubble.customActions : bubble.showActions ? (
                   <div className="flex gap-2 mt-3">
