@@ -99,6 +99,19 @@ export function DataBubble({
   
   const colorStyles = getColorStyles()
 
+  // Format timestamp to match screenshot format (12-10 | 7:45 pm)
+  const formatTimestamp = (timestamp: string | Date) => {
+    const date = new Date(timestamp)
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    let hours = date.getHours()
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    const ampm = hours >= 12 ? 'pm' : 'am'
+    hours = hours % 12 || 12
+    
+    return `${month}-${day} | ${hours}:${minutes} ${ampm}`
+  }
+
   // Format relative time
   const formatRelativeTime = (timestamp: string | Date) => {
     const now = new Date()
@@ -134,10 +147,20 @@ export function DataBubble({
     const cardType = data["نوع البطاقة"] || data["Card Type"] || data["البنك"] || "CARD"
     
     return (
-      <div className="flex flex-col gap-3" style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}>
+      <div className="bg-gray-50 rounded-xl p-4" style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}>
+        {/* Header - Timestamp and Title */}
+        <div className="mb-3">
+          {timestamp && (
+            <div className="text-xs text-gray-500 text-right mb-1">
+              {formatTimestamp(timestamp)}
+            </div>
+          )}
+          <h3 className="text-xl font-bold text-gray-800 text-center">{title}</h3>
+        </div>
+
         {/* Credit Card */}
         <div 
-          className={`relative bg-gradient-to-br ${colorStyles.gradient} rounded-xl shadow-lg p-4 text-white overflow-hidden`}
+          className={`relative bg-gradient-to-br ${colorStyles.gradient} rounded-xl shadow-lg p-4 text-white overflow-hidden mb-3`}
           style={{ aspectRatio: '1.586/1' }}
         >
           {/* Card Background Pattern */}
@@ -148,29 +171,22 @@ export function DataBubble({
 
           {/* Card Content */}
           <div className="relative h-full flex flex-col justify-between">
-            {/* Top Section - Card Type & Status */}
+            {/* Top Section - Icon */}
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-2">
                 {icon && <span className="text-2xl">{icon}</span>}
-                {isLatest && (
-                  <span className="px-2 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-bold rounded-full">
-                    ⭐ جديد
-                  </span>
-                )}
               </div>
-              <div className="text-right">
-                <div className="text-base font-bold tracking-wider">{cardType}</div>
-                {timestamp && (
-                  <div className="text-xs opacity-80">{formatRelativeTime(timestamp)}</div>
-                )}
-              </div>
+              {isLatest && (
+                <span className="px-2 py-1 bg-white/20 backdrop-blur-sm text-white text-xs font-bold rounded-full">
+                  ⭐
+                </span>
+              )}
             </div>
 
             {/* Middle Section - Card Number */}
             <div className="flex flex-col gap-1">
-              <div className="text-xs opacity-70">رقم البطاقة</div>
               <div 
-                className="text-xl font-bold tracking-widest"
+                className="text-xl font-bold tracking-widest text-center"
                 style={{ direction: "ltr", fontFamily: "monospace" }}
               >
                 {cardNumber}
@@ -179,52 +195,31 @@ export function DataBubble({
 
             {/* Bottom Section - Expiry, CVV & Holder */}
             <div className="flex items-end justify-between">
-              <div className="flex gap-6">
+              <div className="flex gap-4 text-sm">
                 <div>
-                  <div className="text-xs opacity-70">تاريخ الانتهاء</div>
-                  <div className="text-base font-bold" style={{ direction: "ltr" }}>{expiryDate}</div>
+                  <div className="text-[10px] opacity-70">تاريخ الانتهاء</div>
+                  <div className="font-bold" style={{ direction: "ltr" }}>{expiryDate}</div>
                 </div>
                 <div>
-                  <div className="text-xs opacity-70">CVV</div>
-                  <div className="text-base font-bold" style={{ direction: "ltr" }}>{cvv}</div>
+                  <div className="text-[10px] opacity-70">CVV</div>
+                  <div className="font-bold" style={{ direction: "ltr" }}>{cvv}</div>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-xs opacity-70">اسم حامل البطاقة</div>
-                <div className="text-base font-bold uppercase">{holderName}</div>
+              <div className="text-right text-sm">
+                <div className="text-[10px] opacity-70">اسم حامل البطاقة</div>
+                <div className="font-bold uppercase">{holderName}</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Additional Info Below Card */}
-        <div className="bg-gray-50 rounded-lg p-2 border border-gray-200">
-          <div className="flex items-center justify-between mb-1">
-            <h4 className="text-xs font-bold text-gray-700">{title}</h4>
+        {/* Footer - Status and Actions */}
+        <div className="flex items-center justify-between">
+          <div>
             {getStatusBadge()}
           </div>
-          
-          {/* Other fields not shown on card */}
-          <div className="space-y-1">
-            {Object.entries(data).map(([key, value]) => {
-              // Skip fields already shown on card
-              if (["رقم البطاقة", "تاريخ الانتهاء", "CVV", "اسم حامل البطاقة", "نوع البطاقة", "البنك"].includes(key)) {
-                return null
-              }
-              if (value === undefined || value === null) return null
-              
-              return (
-                <div key={key} className="flex justify-between items-center text-xs">
-                  <span className="text-gray-600">{key}:</span>
-                  <span className="font-semibold text-gray-900">{value?.toString()}</span>
-                </div>
-              )
-            })}
-          </div>
-
-          {/* Actions */}
           {showActions && actions && (
-            <div className="mt-3 pt-3 border-t border-gray-200">
+            <div>
               {actions}
             </div>
           )}
@@ -233,120 +228,46 @@ export function DataBubble({
     )
   }
 
-  // Default vertical layout for non-card data
-  if (layout === "vertical") {
-    return (
-      <div 
-        className={`bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg shadow-sm p-2 border ${colorStyles.border} transition-all hover:shadow-md flex flex-col h-full`}
-        style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}
-      >
-        {/* Header */}
-        <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-gray-200">
-          {icon && (
-            <div className={`${colorStyles.iconBg} text-white rounded-full p-1.5 shadow-sm flex-shrink-0`}>
-              <span className="text-base">{icon}</span>
-            </div>
-          )}
-          <div className="flex-1 min-w-0">
-            <h3 className={`text-xs font-bold ${colorStyles.titleColor} truncate`}>{title}</h3>
-            {timestamp && (
-              <span className="text-[10px] text-gray-600">
-                🕐 {formatRelativeTime(timestamp)}
-              </span>
-            )}
+  // Default layout for non-card data (OTP, PIN, etc.)
+  return (
+    <div className="bg-gray-50 rounded-xl p-4" style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}>
+      {/* Header - Timestamp and Title */}
+      <div className="mb-3">
+        {timestamp && (
+          <div className="text-xs text-gray-500 text-right mb-1">
+            {formatTimestamp(timestamp)}
           </div>
-          
-          <div className="flex flex-col gap-1 items-end flex-shrink-0">
-            {isLatest && (
-              <span className="px-1.5 py-0.5 bg-blue-600 text-white text-xs font-bold rounded-full">
-                ⭐
-              </span>
-            )}
-            {getStatusBadge()}
-          </div>
-        </div>
+        )}
+        <h3 className="text-xl font-bold text-gray-800 text-center">{title}</h3>
+      </div>
 
-        {/* Data Fields */}
-        <div className="flex-1 space-y-1.5 overflow-y-auto min-h-0">
+      {/* Content */}
+      <div className="bg-white rounded-lg p-3 shadow-sm mb-3">
+        <div className="space-y-2">
           {Object.entries(data).map(([key, value]) => {
             if (value === undefined || value === null) return null
             return (
-              <div key={key} className="flex justify-between items-center gap-2 bg-white/90 rounded p-1.5 text-xs">
-                <span className="font-semibold text-gray-600 flex-shrink-0">{key}:</span>
-                <span className="text-gray-900 font-bold text-right truncate">
+              <div key={key} className="flex justify-between items-center gap-2 text-sm">
+                <span className="font-semibold text-gray-600">{key}:</span>
+                <span className="text-gray-900 font-bold text-right">
                   {value?.toString() || "-"}
                 </span>
               </div>
             )
           })}
         </div>
+      </div>
 
-        {/* Actions */}
+      {/* Footer - Status and Actions */}
+      <div className="flex items-center justify-between">
+        <div>
+          {getStatusBadge()}
+        </div>
         {showActions && actions && (
-          <div className="mt-2 pt-1.5 border-t border-gray-200">
+          <div>
             {actions}
           </div>
         )}
-      </div>
-    )
-  }
-
-  // Horizontal layout
-  return (
-    <div 
-      className={`bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl shadow-md p-3 border-2 ${colorStyles.border} transition-all hover:shadow-lg`}
-      style={{ fontFamily: 'Cairo, Tajawal, sans-serif' }}
-    >
-      <div className="flex items-start gap-3">
-        {/* Icon & Title */}
-        <div className="flex items-center gap-2 flex-shrink-0 min-w-[180px]">
-          {icon && (
-            <div className={`${colorStyles.iconBg} text-white rounded-full p-2 shadow-sm`}>
-              <span className="text-xl">{icon}</span>
-            </div>
-          )}
-          <div>
-            <h3 className={`text-sm font-bold ${colorStyles.titleColor}`}>{title}</h3>
-            {timestamp && (
-              <span className="text-xs text-gray-600">
-                🕐 {formatRelativeTime(timestamp)}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Data Fields */}
-        <div className="flex-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-          {Object.entries(data).map(([key, value]) => {
-            if (value === undefined || value === null) return null
-            return (
-              <div key={key} className="flex flex-col bg-white/90 rounded-lg p-2 shadow-sm min-w-0">
-                <span className="text-xs font-semibold text-gray-600 mb-0.5 truncate">{key}</span>
-                <span 
-                  className="text-gray-900 font-bold truncate text-sm"
-                  title={value?.toString()}
-                >
-                  {value?.toString() || "-"}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-
-        {/* Status & Actions */}
-        <div className="flex flex-col gap-2 items-end flex-shrink-0">
-          {isLatest && (
-            <span className="px-2 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">
-              ⭐
-            </span>
-          )}
-          {getStatusBadge()}
-          {showActions && actions && (
-            <div className="w-full">
-              {actions}
-            </div>
-          )}
-        </div>
       </div>
     </div>
   )
